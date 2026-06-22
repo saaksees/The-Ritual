@@ -1,6 +1,10 @@
 # The Ritual - AI-Powered Skincare Consultant
 
-A personalized skincare recommendation website using Google Gemini AI.
+A personalized skincare recommendation website using Groq AI (Llama 3.3 70B).
+
+## 🌐 Live Demo
+
+**[Visit The Ritual](https://the-ritual-saaksees-projects.vercel.app/)**
 
 ## 🚀 Quick Deploy to Vercel
 
@@ -27,14 +31,14 @@ git push -u origin main
 
 1. In Vercel dashboard → Your project → **Settings** → **Environment Variables**
 2. Add:
-   - **Name:** `GEMINI_API_KEY`
-   - **Value:** `AIzaSyAQ.Ab8RN6IeOrlNI265LrYVKIaRDtMA5V-lT15nK1JXcnQw0JZDtw`
+   - **Name:** `GROQ_API_KEY`
+   - **Value:** Your Groq API key from [console.groq.com](https://console.groq.com)
 3. Click **Save**
 4. Go to **Deployments** → Click the three dots on latest deployment → **Redeploy**
 
 ### Step 4: Done! 🎉
 
-Your site will be live at: `https://the-ritual.vercel.app` (or your custom Vercel URL)
+Your site will be live at: `https://the-ritual-saaksees-projects.vercel.app/`
 
 ---
 
@@ -51,10 +55,10 @@ The Ritual/
 
 ## 🔑 About the API
 
-- **Model:** Google Gemini 1.5 Flash (free tier)
-- **Rate limit:** 15 requests/min
-- **No credit card required**
-- Get your own key at: [aistudio.google.com](https://aistudio.google.com)
+- **Model:** Groq Llama 3.3 70B Versatile
+- **Provider:** Groq (super fast inference)
+- **Free tier:** 30 requests/min
+- Get your API key at: [console.groq.com](https://console.groq.com)
 
 ## 🛠️ Local Development
 
