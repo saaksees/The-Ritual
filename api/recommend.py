@@ -87,7 +87,21 @@ class handler(BaseHTTPRequestHandler):
                 }).encode())
                 return
             
-            clean = text.replace("```json", "").replace("```", "").strip()
+            # Clean up the response - remove markdown, extra text
+            clean = text.strip()
+            
+            # Remove markdown code blocks
+            if "```json" in clean:
+                clean = clean.split("```json")[1].split("```")[0].strip()
+            elif "```" in clean:
+                clean = clean.split("```")[1].split("```")[0].strip()
+            
+            # Try to find JSON object boundaries
+            start = clean.find('{')
+            end = clean.rfind('}')
+            if start != -1 and end != -1:
+                clean = clean[start:end+1]
+            
             parsed = json.loads(clean)
             
             # Log to Supabase in background
