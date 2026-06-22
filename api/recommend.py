@@ -26,7 +26,8 @@ class handler(BaseHTTPRequestHandler):
             data=payload,
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {api_key}"
+                "Authorization": f"Bearer {api_key}",
+                "User-Agent": "Mozilla/5.0"
             },
             method="POST"
         )
