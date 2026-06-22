@@ -72,9 +72,21 @@ class handler(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(length))
         prompt = body.get('prompt', '')
         answers = body.get('answers', {})
+        is_chat = body.get('is_chat', False)
         
         try:
             text = call_groq(prompt)
+            
+            if is_chat:
+                self.send_response(200)
+                self._cors()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({
+                    "content": [{"type": "text", "text": text}]
+                }).encode())
+                return
+            
             clean = text.replace("```json", "").replace("```", "").strip()
             parsed = json.loads(clean)
             
