@@ -12,24 +12,29 @@ class handler(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(length))
         prompt = body.get('prompt', '')
         
-        api_key = os.environ.get("GEMINI_API_KEY", "")
+        api_key = os.environ.get("XAI_API_KEY", "")
         
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+        url = "https://api.x.ai/v1/chat/completions"
         
         payload = json.dumps({
-            "contents": [{
-                "parts": [{"text": prompt}]
-            }],
-            "generationConfig": {
-                "temperature": 0.7,
-                "maxOutputTokens": 4000
-            }
+            "model": "grok-beta",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "temperature": 0.7,
+            "max_tokens": 4000
         }).encode()
         
         req = urllib.request.Request(
             url,
             data=payload,
-            headers={"Content-Type": "application/json"},
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {api_key}"
+            },
             method="POST"
         )
         
@@ -37,8 +42,8 @@ class handler(BaseHTTPRequestHandler):
             with urllib.request.urlopen(req) as res:
                 data = json.loads(res.read())
             
-            # Extract text from Gemini response
-            text = data["candidates"][0]["content"]["parts"][0]["text"]
+            # Extract text from Grok response (OpenAI-compatible format)
+            text = data["choices"][0]["message"]["content"]
             
             # Return in same shape as Anthropic so frontend works unchanged
             self.send_response(200)
@@ -56,7 +61,7 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({
                 "error": {
-                    "type": "gemini_error",
+                    "type": "grok_error",
                     "message": err.decode()
                 }
             }).encode())
