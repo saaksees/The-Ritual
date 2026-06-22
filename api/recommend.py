@@ -26,8 +26,7 @@ class handler(BaseHTTPRequestHandler):
             data=payload,
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {api_key}",
-                "User-Agent": "Mozilla/5.0"
+                "Authorization": f"Bearer {api_key}"
             },
             method="POST"
         )
@@ -38,7 +37,6 @@ class handler(BaseHTTPRequestHandler):
             
             text = data["choices"][0]["message"]["content"]
             
-            # Return in same shape as Anthropic so frontend works unchanged
             self.send_response(200)
             self._cors()
             self.send_header("Content-Type", "application/json")
