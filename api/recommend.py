@@ -12,17 +12,17 @@ class handler(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(length))
         prompt = body.get('prompt', '')
         
-        api_key = os.environ.get("GROK_API_KEY", "")
+        api_key = os.environ.get("GROQ_API_KEY", "")
         
         payload = json.dumps({
-            "model": "grok-3-mini",
+            "model": "llama-3.3-70b-versatile",
             "messages": [{"role": "user", "content": prompt}],
             "max_tokens": 4000,
             "temperature": 0.7
         }).encode()
         
         req = urllib.request.Request(
-            "https://api.x.ai/v1/chat/completions",
+            "https://api.groq.com/openai/v1/chat/completions",
             data=payload,
             headers={
                 "Content-Type": "application/json",
@@ -53,7 +53,7 @@ class handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({
                 "error": {
-                    "type": "grok_error",
+                    "type": "groq_error",
                     "message": err.decode()
                 }
             }).encode())
