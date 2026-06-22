@@ -14,13 +14,17 @@ class handler(BaseHTTPRequestHandler):
         
         api_key = os.environ.get("GEMINI_API_KEY", "")
         
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={api_key}"
+        
         payload = json.dumps({
             "contents": [{
                 "parts": [{"text": prompt}]
-            }]
+            }],
+            "generationConfig": {
+                "temperature": 0.7,
+                "maxOutputTokens": 4000
+            }
         }).encode()
-        
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
         
         req = urllib.request.Request(
             url,
@@ -33,31 +37,29 @@ class handler(BaseHTTPRequestHandler):
             with urllib.request.urlopen(req) as res:
                 data = json.loads(res.read())
             
-            # Transform Gemini response to match expected format
-            if "candidates" in data and len(data["candidates"]) > 0:
-                text_content = data["candidates"][0]["content"]["parts"][0]["text"]
-                response = {
-                    "content": [{"text": text_content}]
-                }
-            else:
-                response = {"error": {"message": "No response from Gemini"}}
+            # Extract text from Gemini response
+            text = data["candidates"][0]["content"]["parts"][0]["text"]
             
+            # Return in same shape as Anthropic so frontend works unchanged
             self.send_response(200)
             self._cors()
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps(response).encode())
+            self.wfile.write(json.dumps({
+                "content": [{"type": "text", "text": text}]
+            }).encode())
         except urllib.error.HTTPError as e:
-            err_text = e.read().decode()
-            try:
-                err = json.loads(err_text)
-            except:
-                err = {"error": {"message": err_text}}
+            err = e.read()
             self.send_response(e.code)
             self._cors()
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps(err).encode())
+            self.wfile.write(json.dumps({
+                "error": {
+                    "type": "gemini_error",
+                    "message": err.decode()
+                }
+            }).encode())
 
     def _cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
