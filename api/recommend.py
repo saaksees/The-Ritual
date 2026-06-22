@@ -12,24 +12,17 @@ class handler(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(length))
         prompt = body.get('prompt', '')
         
-        api_key = os.environ.get("XAI_API_KEY", "")
-        
-        url = "https://api.x.ai/v1/chat/completions"
+        api_key = os.environ.get("GROK_API_KEY", "")
         
         payload = json.dumps({
-            "model": "grok-beta",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            "temperature": 0.7,
-            "max_tokens": 4000
+            "model": "grok-3-mini",
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 4000,
+            "temperature": 0.7
         }).encode()
         
         req = urllib.request.Request(
-            url,
+            "https://api.x.ai/v1/chat/completions",
             data=payload,
             headers={
                 "Content-Type": "application/json",
@@ -42,7 +35,6 @@ class handler(BaseHTTPRequestHandler):
             with urllib.request.urlopen(req) as res:
                 data = json.loads(res.read())
             
-            # Extract text from Grok response (OpenAI-compatible format)
             text = data["choices"][0]["message"]["content"]
             
             # Return in same shape as Anthropic so frontend works unchanged
