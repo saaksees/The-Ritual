@@ -1,0 +1,399 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Consumer Intelligence Lab — The Ritual</title><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><style>*{margin:0;padding:0;box-sizing:border-box}:root{--gold:#C9A84C;--gold-light:#E8D5A3;--gold-dark:#8B6914;--navy:#0A0E1A;--navy2:#111827;--navy3:#1C2537;--text:#F5F0E8;--text-muted:#A89F8C;--text-dim:#6B6356;--border:rgba(201,168,76,0.2);--border-strong:rgba(201,168,76,0.5);}
+body{background:var(--navy);color:var(--text);font-family:'Georgia',serif;min-height:100vh;padding:2rem 1rem}
+header{text-align:center;margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.eyebrow{font-size:.68rem;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;margin-bottom:.75rem}
+h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;letter-spacing:.08em;margin-bottom:.5rem}
+.subtitle{color:var(--text-muted);font-style:italic;font-size:.95rem}
+.back-link{display:inline-block;margin-top:1rem;font-size:.78rem;color:var(--gold);text-decoration:none;letter-spacing:.15em;border-bottom:1px solid var(--border-strong);padding-bottom:1px}
+.nav-links{display:flex;gap:2rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.section{max-width:1100px;margin:0 auto 4rem;padding:3rem 0;border-top:2px solid var(--border-strong)}
+.section:first-of-type{border-top:none}
+.section-header{text-align:center;margin-bottom:2.5rem}
+.section-title{font-size:.75rem;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
+.section-desc{font-size:1.05rem;color:var(--text-muted);font-style:italic;line-height:1.8;max-width:700px;margin:0 auto}
+.combo-list{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:2rem;border-radius:4px}
+.combo-item{display:flex;align-items:center;gap:1.5rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.combo-item:last-child{border-bottom:none}
+.combo-rank{font-size:1.8rem;color:var(--gold);min-width:3rem;text-align:center;font-style:italic}
+.combo-info{flex:1}
+.combo-name{font-size:1rem;color:var(--text);margin-bottom:.3rem}
+.combo-stat{font-size:.75rem;color:var(--text-dim);letter-spacing:.05em}
+.combo-bar-wrap{width:200px}
+.combo-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.combo-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:2px;transition:width .8s ease}
+.network-container{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:2rem;border-radius:4px;min-height:500px;position:relative}
+.network-canvas{width:100%;height:500px;background:rgba(10,14,26,.4);border-radius:2px}
+.insight-card{background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--border);padding:2rem 2.25rem;margin-bottom:1.25rem;transition:all .3s ease;border-radius:4px;position:relative;overflow:hidden}
+.insight-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,var(--gold),var(--gold-dark));opacity:0;transition:opacity .3s}
+.insight-card:hover{border-color:var(--border-strong);background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.insight-card:hover::before{opacity:1}
+.insight-icon{font-size:1.8rem;margin-bottom:1rem;display:inline-block;filter:drop-shadow(0 2px 8px rgba(201,168,76,.3))}
+.insight-text{font-size:1rem;color:var(--text);line-height:1.95;letter-spacing:.01em;font-style:italic}
+.insight-number{position:absolute;top:1.5rem;right:2rem;font-size:3rem;color:rgba(201,168,76,.08);font-weight:700;font-style:normal;line-height:1}
+.opportunity-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.opportunity-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:2rem;border-radius:4px;transition:all .3s}
+.opportunity-card:hover{border-color:var(--border-strong);transform:translateY(-2px)}
+.opportunity-concern{font-size:1.1rem;color:var(--text);margin-bottom:.5rem}
+.opportunity-size{font-size:2rem;color:var(--gold);margin:.75rem 0}
+.opportunity-label{font-size:.7rem;letter-spacing:.2em;color:var(--text-dim);text-transform:uppercase}
+.opportunity-demand{font-size:.85rem;color:var(--text-muted);margin-top:.75rem;font-style:italic}
+.summary-box{background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.02));border:1px solid var(--border-strong);padding:2.5rem;box-shadow:0 4px 16px rgba(0,0,0,.2);border-radius:4px}
+.summary-title{font-size:.7rem;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;margin-bottom:1.25rem;text-align:center}
+.summary-text{font-size:1.05rem;color:var(--text);line-height:2;text-align:center;font-style:italic}
+.btn-generate{background:linear-gradient(135deg,var(--gold-dark),var(--gold));border:none;color:var(--navy);padding:1.15rem 3rem;font-family:'Georgia',serif;font-size:.88rem;letter-spacing:.18em;cursor:pointer;transition:all .3s ease;text-transform:uppercase;margin:0 auto;display:inline-block;box-shadow:0 6px 20px rgba(201,168,76,.4);border-radius:2px;font-weight:600;position:relative;overflow:hidden}
+.btn-generate::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);transition:left .5s}
+.btn-generate:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(201,168,76,.5)}
+.btn-generate:hover::before{left:100%}
+.btn-generate:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.loading{text-align:center;padding:4rem;color:var(--text-muted);font-style:italic}
+.empty{text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;font-size:.9rem}
+.insights-loading{text-align:center;padding:2rem;color:var(--text-muted);font-style:italic}
+.chart-wrap{position:relative;height:320px;margin:2rem 0}
+</style></head><body>
+<header>
+  <div class="eyebrow">The Ritual</div>
+  <h1>Consumer Intelligence Lab</h1>
+  <p class="subtitle">Understanding how Indian skincare consumers behave</p>
+  <div class="nav-links">
+    <a class="back-link" href="/">← The Ritual</a>
+    <a class="back-link" href="/dashboard.html">→ Dashboard</a>
+  </div>
+</header>
+
+<div id="content"><div class="loading">Loading consumer intelligence…</div></div>
+
+<script>
+const SUPABASE_URL = 'https://phoyiuuhpkmtculpqbpj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_kz44OMVJnt1-mEcSiR197Q_DwWGmDYU';
+
+async function fetchData() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/quiz_responses?select=*&limit=1000&order=created_at.asc`, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }
+  });
+  if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
+  return res.json();
+}
+
+function analyzeConcernCombinations(rows) {
+  const combinations = {};
+  
+  rows.forEach(row => {
+    const concerns = row.concerns || [];
+    if (concerns.length < 2) return; // Only analyze combinations
+    
+    // Sort to ensure consistent ordering
+    const sorted = concerns.sort();
+    const combo = sorted.join(' + ');
+    combinations[combo] = (combinations[combo] || 0) + 1;
+  });
+  
+  return combinations;
+}
+
+function analyzeConcernRelationships(rows) {
+  const relationships = {};
+  
+  rows.forEach(row => {
+    const concerns = row.concerns || [];
+    
+    // Create pairs
+    for (let i = 0; i < concerns.length; i++) {
+      for (let j = i + 1; j < concerns.length; j++) {
+        const pair = [concerns[i], concerns[j]].sort().join('|||');
+        relationships[pair] = (relationships[pair] || 0) + 1;
+      }
+    }
+  });
+  
+  return relationships;
+}
+
+function createNetworkVisualization(relationships, container) {
+  // Extract unique concerns
+  const concernsSet = new Set();
+  Object.keys(relationships).forEach(pair => {
+    const [c1, c2] = pair.split('|||');
+    concernsSet.add(c1);
+    concernsSet.add(c2);
+  });
+  
+  const concerns = Array.from(concernsSet);
+  const canvas = document.createElement('canvas');
+  canvas.className = 'network-canvas';
+  container.appendChild(canvas);
+  
+  const ctx = canvas.getContext('2d');
+  canvas.width = container.offsetWidth - 64;
+  canvas.height = 500;
+  
+  // Position nodes in a circle
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = Math.min(centerX, centerY) - 80;
+  
+  const nodes = concerns.map((concern, i) => {
+    const angle = (i / concerns.length) * 2 * Math.PI;
+    return {
+      name: concern,
+      x: centerX + radius * Math.cos(angle),
+      y: centerY + radius * Math.sin(angle)
+    };
+  });
+  
+  // Draw connections
+  const maxWeight = Math.max(...Object.values(relationships));
+  Object.entries(relationships).forEach(([pair, count]) => {
+    const [c1, c2] = pair.split('|||');
+    const node1 = nodes.find(n => n.name === c1);
+    const node2 = nodes.find(n => n.name === c2);
+    
+    if (node1 && node2) {
+      const weight = count / maxWeight;
+      ctx.beginPath();
+      ctx.moveTo(node1.x, node1.y);
+      ctx.lineTo(node2.x, node2.y);
+      ctx.strokeStyle = `rgba(201, 168, 76, ${weight * 0.6})`;
+      ctx.lineWidth = 1 + weight * 3;
+      ctx.stroke();
+    }
+  });
+  
+  // Draw nodes
+  nodes.forEach(node => {
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, 30, 0, 2 * Math.PI);
+    ctx.fillStyle = 'rgba(17, 24, 39, 0.9)';
+    ctx.fill();
+    ctx.strokeStyle = '#C9A84C';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Draw text
+    ctx.fillStyle = '#F5F0E8';
+    ctx.font = '11px Georgia';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    const words = node.name.split(' ');
+    words.forEach((word, i) => {
+      ctx.fillText(word, node.x, node.y - 10 + i * 14);
+    });
+  });
+}
+
+async function generateConsumerInsights(stats) {
+  const prompt = `Analyze these consumer concern combination patterns and generate 5 business intelligence insights:
+
+Top Combinations: ${JSON.stringify(stats.topCombinations)}
+Total Users: ${stats.totalUsers}
+Most Connected Concern: ${stats.mostConnected}
+
+Return ONLY a JSON array of 5 insights:
+["Insight about concern patterns", "Insight about combination frequency", "Insight about consumer behavior", "Insight about market opportunities", "Insight about product strategy"]`;
+
+  try {
+    const res = await fetch('/api/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, answers: {}, is_chat: true })
+    });
+    
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const data = await res.json();
+    let text = data.content?.map(c => c.text || '').join('').trim();
+    
+    text = text.replace(/```json|```/g, '').trim();
+    const start = text.indexOf('[');
+    const end = text.lastIndexOf(']');
+    if (start !== -1 && end !== -1) {
+      text = text.substring(start, end + 1);
+    }
+    
+    const insights = JSON.parse(text);
+    return Array.isArray(insights) ? insights : [];
+  } catch (e) {
+    console.error('Consumer insights error:', e);
+    return [`Unable to generate insights: ${e.message}`];
+  }
+}
+
+async function loadConsumerInsights() {
+  const btn = event.target;
+  const container = document.getElementById('consumerInsightsContainer');
+  
+  btn.disabled = true;
+  btn.textContent = 'Generating Insights...';
+  container.innerHTML = '<div class="insights-loading">✨ Analyzing consumer patterns...</div>';
+  
+  try {
+    const stats = window._consumerIntelligenceStats;
+    if (!stats) throw new Error('Consumer data not loaded');
+    
+    const insights = await generateConsumerInsights(stats);
+    
+    let html = '<div style="display:grid;gap:1.25rem;margin-top:2rem">';
+    insights.forEach((insight, i) => {
+      const icons = ['🔬', '📊', '🎯', '💡', '🧬'];
+      html += `<div class="insight-card">
+        <div class="insight-number">${String(i + 1).padStart(2, '0')}</div>
+        <div class="insight-icon">${icons[i % icons.length]}</div>
+        <div class="insight-text">${insight}</div>
+      </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+    btn.textContent = 'Refresh Insights';
+  } catch (e) {
+    console.error('Load consumer insights error:', e);
+    container.innerHTML = `<div class="empty">Failed to generate insights: ${e.message}</div>`;
+    btn.textContent = 'Try Again';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function init() {
+  try {
+    const rows = await fetchData();
+    
+    if (!rows.length) {
+      document.getElementById('content').innerHTML = '<div class="empty">No consumer data available yet</div>';
+      return;
+    }
+    
+    // Analyze data
+    const combinations = analyzeConcernCombinations(rows);
+    const relationships = analyzeConcernRelationships(rows);
+    const topCombinations = Object.entries(combinations).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    const maxComboCount = topCombinations[0]?.[1] || 1;
+    
+    // Find most connected concern
+    const concernConnections = {};
+    Object.entries(relationships).forEach(([pair, count]) => {
+      const [c1, c2] = pair.split('|||');
+      concernConnections[c1] = (concernConnections[c1] || 0) + count;
+      concernConnections[c2] = (concernConnections[c2] || 0) + count;
+    });
+    const mostConnected = Object.entries(concernConnections).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Unknown';
+    
+    // Market opportunities (largest unmet needs)
+    const opportunities = topCombinations.slice(0, 5).map(([combo, count]) => ({
+      concern: combo,
+      size: count,
+      demand: Math.round((count / rows.length) * 100)
+    }));
+    
+    // Store for AI insights
+    window._consumerIntelligenceStats = {
+      topCombinations: Object.fromEntries(topCombinations.slice(0, 5)),
+      totalUsers: rows.length,
+      mostConnected
+    };
+    
+    // Render page
+    let html = `
+      <!-- SECTION 1: Concern Combinations -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Concern Combination Analysis</div>
+          <div class="section-desc">The most frequent skin concern combinations revealing consumer pain points</div>
+        </div>
+        
+        <div class="combo-list">
+          ${topCombinations.map(([combo, count], i) => {
+            const percentage = Math.round((count / rows.length) * 100);
+            return `<div class="combo-item">
+              <div class="combo-rank">${i + 1}</div>
+              <div class="combo-info">
+                <div class="combo-name">${combo}</div>
+                <div class="combo-stat">${count} occurrences (${percentage}% of all users)</div>
+              </div>
+              <div class="combo-bar-wrap">
+                <div class="combo-bar">
+                  <div class="combo-bar-fill" style="width:${(count / maxComboCount) * 100}%"></div>
+                </div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      
+      <!-- SECTION 2: Relationship Network -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Concern Relationship Network</div>
+          <div class="section-desc">Visual map of how concerns connect — thicker lines indicate stronger relationships</div>
+        </div>
+        
+        <div class="network-container" id="networkContainer"></div>
+      </div>
+      
+      <!-- SECTION 3: Consumer Insights -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Consumer Intelligence</div>
+          <div class="section-desc">AI-powered insights into consumer behavior patterns</div>
+        </div>
+        
+        <div style="text-align:center;margin-bottom:2rem">
+          <button class="btn-generate" onclick="loadConsumerInsights()">Generate Consumer Insights</button>
+        </div>
+        <div id="consumerInsightsContainer"></div>
+      </div>
+      
+      <!-- SECTION 4: Market Opportunities -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Market Opportunity Analysis</div>
+          <div class="section-desc">Largest unmet consumer needs based on concern combinations</div>
+        </div>
+        
+        <div class="opportunity-grid">
+          ${opportunities.map((opp, i) => `
+            <div class="opportunity-card">
+              <div class="opportunity-concern">${opp.concern}</div>
+              <div class="opportunity-size">${opp.size}</div>
+              <div class="opportunity-label">Users Affected</div>
+              <div class="opportunity-demand">${opp.demand}% of total market</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <!-- SECTION 5: Research Summary -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Consumer Research Summary</div>
+        </div>
+        
+        <div class="summary-box">
+          <div class="summary-title">Executive Summary</div>
+          <div class="summary-text">
+            Based on ${rows.length} consultations, Indian skincare consumers predominantly experience multiple simultaneous concerns. 
+            <strong>${topCombinations[0][0]}</strong> emerges as the strongest concern cluster with ${topCombinations[0][1]} occurrences. 
+            <strong>${mostConnected}</strong> shows the highest interconnectivity, appearing across ${concernConnections[mostConnected]} different combinations, 
+            suggesting it's a pivotal concern in the consumer journey. This pattern indicates strong demand for multifunctional treatment products 
+            that address interconnected skin issues rather than single-concern solutions.
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('content').innerHTML = html;
+    
+    // Create network visualization
+    setTimeout(() => {
+      const container = document.getElementById('networkContainer');
+      if (container) {
+        createNetworkVisualization(relationships, container);
+      }
+    }, 100);
+    
+  } catch (e) {
+    document.getElementById('content').innerHTML = `<div class="empty">Error loading consumer intelligence: ${e.message}</div>`;
+  }
+}
+
+init();
+</script>
+</body></html>
