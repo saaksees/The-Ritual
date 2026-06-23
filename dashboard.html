@@ -185,6 +185,9 @@ Return ONLY a JSON array of 6 insights as strings. Example format:
     return insights;
   }catch(e){
     console.error('Market insights error:', e);
+    if(e.message && e.message.includes('429')) {
+      return [`The AI service is temporarily rate-limited. This feature generates insights on demand, so please wait 5-10 minutes before trying again. In the meantime, explore the charts and data above!`];
+    }
     return [`Unable to generate insights: ${e.message}. Try refreshing the page and clicking again.`];
   }
 }
@@ -192,6 +195,16 @@ Return ONLY a JSON array of 6 insights as strings. Example format:
 async function loadMarketInsights() {
   const btn = event.target;
   const container = document.getElementById('marketInsights');
+  
+  // Check if we have cached insights (valid for 1 hour)
+  const cached = sessionStorage.getItem('marketInsights');
+  const cacheTime = sessionStorage.getItem('marketInsightsTime');
+  if(cached && cacheTime && (Date.now() - parseInt(cacheTime)) < 3600000) {
+    container.innerHTML = cached;
+    btn.textContent = 'Refresh Insights';
+    return;
+  }
+  
   btn.disabled = true;
   btn.textContent = 'Generating Insights...';
   container.innerHTML = '<div class="insights-loading">✨ AI is analyzing your data...</div>';
@@ -221,9 +234,14 @@ async function loadMarketInsights() {
     html += '</div>';
     container.innerHTML = html;
     btn.textContent = 'Refresh Insights';
+    
+    // Cache the results
+    sessionStorage.setItem('marketInsights', html);
+    sessionStorage.setItem('marketInsightsTime', Date.now().toString());
+    
   } catch(e) {
     console.error('Load insights error:', e);
-    container.innerHTML = `<div class="empty">Failed to generate insights: ${e.message}<br>Try refreshing the page.</div>`;
+    container.innerHTML = `<div class="empty">Failed to generate insights: ${e.message}<br>Try refreshing the page or wait a few minutes before trying again.</div>`;
     btn.textContent = 'Try Again';
   } finally {
     btn.disabled = false;
