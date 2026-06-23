@@ -1,4 +1,43 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>The Ritual — Insights</title><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><style>*{margin:0;padding:0;box-sizing:border-box}:root{--gold:#C9A84C;--gold-light:#E8D5A3;--gold-dark:#8B6914;--navy:#0A0E1A;--navy2:#111827;--navy3:#1C2537;--text:#F5F0E8;--text-muted:#A89F8C;--text-dim:#6B6356;--border:rgba(201,168,76,0.2);--border-strong:rgba(201,168,76,0.5);}body{background:var(--navy);color:var(--text);font-family:'Georgia',serif;min-height:100vh;padding:2rem 1rem}header{text-align:center;margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}.eyebrow{font-size:.68rem;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;margin-bottom:.75rem}h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;letter-spacing:.08em;margin-bottom:.5rem}.subtitle{color:var(--text-muted);font-style:italic;font-size:.95rem}.back-link{display:inline-block;margin-top:1rem;font-size:.78rem;color:var(--gold);text-decoration:none;letter-spacing:.15em;border-bottom:1px solid var(--border-strong);padding-bottom:1px}.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;max-width:1100px;margin:0 auto 3rem}.stat-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:1.5rem;text-align:center}.stat-num{font-size:2.5rem;color:var(--gold);letter-spacing:-.02em;margin-bottom:.3rem}.stat-label{font-size:.7rem;letter-spacing:.2em;color:var(--text-dim);text-transform:uppercase}.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;max-width:1100px;margin:0 auto 2rem}.chart-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:1.75rem}.chart-card.wide{grid-column:1/-1}.chart-title{font-size:.68rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:1.5rem}.chart-wrap{position:relative;height:260px}.chart-wrap.tall{height:320px}.products-section{max-width:1100px;margin:2rem auto 0}.section-label{font-size:.68rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}.product-row{display:flex;align-items:center;gap:1rem;padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.04)}.product-rank{font-size:1.4rem;color:var(--text-dim);min-width:2.5rem;font-style:italic}.product-info{flex:1}.product-name{font-size:.95rem;color:var(--text);margin-bottom:.2rem}.product-brand{font-size:.72rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase}.product-bar-wrap{width:140px}.product-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}.product-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:2px;transition:width .8s ease}.product-count{font-size:.75rem;color:var(--text-dim);margin-top:.3rem;text-align:right}.loading{text-align:center;padding:4rem;color:var(--text-muted);font-style:italic}.empty{text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;font-size:.9rem}</style></head><body>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>The Ritual — Insights</title><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><style>*{margin:0;padding:0;box-sizing:border-box}:root{--gold:#C9A84C;--gold-light:#E8D5A3;--gold-dark:#8B6914;--navy:#0A0E1A;--navy2:#111827;--navy3:#1C2537;--text:#F5F0E8;--text-muted:#A89F8C;--text-dim:#6B6356;--border:rgba(201,168,76,0.2);--border-strong:rgba(201,168,76,0.5);}
+body{background:var(--navy);color:var(--text);font-family:'Georgia',serif;min-height:100vh;padding:2rem 1rem}
+header{text-align:center;margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.eyebrow{font-size:.68rem;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;margin-bottom:.75rem}
+h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;letter-spacing:.08em;margin-bottom:.5rem}
+.subtitle{color:var(--text-muted);font-style:italic;font-size:.95rem}
+.back-link{display:inline-block;margin-top:1rem;font-size:.78rem;color:var(--gold);text-decoration:none;letter-spacing:.15em;border-bottom:1px solid var(--border-strong);padding-bottom:1px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;max-width:1100px;margin:0 auto 2rem}
+.stat-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:1.5rem;text-align:center}
+.stat-num{font-size:2.5rem;color:var(--gold);letter-spacing:-.02em;margin-bottom:.3rem}
+.stat-label{font-size:.7rem;letter-spacing:.2em;color:var(--text-dim);text-transform:uppercase}
+.stat-desc{font-size:.68rem;color:var(--text-dim);margin-top:.4rem;line-height:1.5;font-style:italic}
+.summary-box{max-width:1100px;margin:0 auto 2.5rem;border:1px solid var(--border-strong);background:rgba(201,168,76,.04);padding:2rem 2.5rem}
+.summary-eyebrow{font-size:.65rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:.75rem}
+.summary-box p{color:var(--text-muted);font-size:1rem;line-height:2;font-style:italic}
+.summary-box strong{color:var(--text);font-style:normal;font-weight:400}
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;max-width:1100px;margin:0 auto 2rem}
+.chart-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:1.75rem}
+.chart-card.wide{grid-column:1/-1}
+.chart-title{font-size:.68rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:.4rem}
+.chart-subtitle{font-size:.78rem;color:var(--text-dim);margin-bottom:1.25rem;line-height:1.6;font-style:italic}
+.chart-wrap{position:relative;height:260px}
+.chart-wrap.tall{height:320px}
+.chart-insight{font-size:.72rem;color:var(--text-dim);margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--border);font-style:italic}
+.products-section{max-width:1100px;margin:2rem auto 0}
+.section-label{font-size:.68rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.section-desc{font-size:.85rem;color:var(--text-muted);font-style:italic;line-height:1.8;margin-bottom:1.5rem}
+.product-row{display:flex;align-items:center;gap:1rem;padding:.85rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.product-rank{font-size:1.4rem;color:var(--text-dim);min-width:2.5rem;font-style:italic}
+.product-info{flex:1}
+.product-name{font-size:.95rem;color:var(--text);margin-bottom:.2rem}
+.product-brand{font-size:.72rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase}
+.product-bar-wrap{width:140px}
+.product-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.product-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:2px;transition:width .8s ease}
+.product-count{font-size:.75rem;color:var(--text-dim);margin-top:.3rem;text-align:right}
+.loading{text-align:center;padding:4rem;color:var(--text-muted);font-style:italic}
+.empty{text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;font-size:.9rem}
+.dashboard-footer{max-width:1100px;margin:3rem auto 1rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--text-dim);font-size:.8rem;font-style:italic;line-height:1.9}
+</style></head><body>
 <header><div class="eyebrow">The Ritual</div><h1>Skin Insights</h1><p class="subtitle">Live data from every ritual consultation</p><a class="back-link" href="/">← Back to The Ritual</a></header>
 <div id="content"><div class="loading">Loading insights…</div></div>
 <script>
@@ -119,27 +158,74 @@ async function init() {
     const daily = consultationsPerDay(rows);
     const split = kbeautySplit(rows);
 
+    const topConcern = topN(concerns,1)[0]?.[0] || 'pigmentation';
+    const topSkin = topN(skinTypes,1)[0]?.[0] || 'combination';
+    const topBudget = topN(budgets,1)[0]?.[0] || 'mid-range';
+    const kPct = Math.round((split.k/(split.k+split.indian||1))*100);
+
     document.getElementById('content').innerHTML = `
+
       <div class="stats-row">
-        <div class="stat-card"><div class="stat-num">${rows.length}</div><div class="stat-label">Total Consultations</div></div>
-        <div class="stat-card"><div class="stat-num">${Object.keys(skinTypes).length}</div><div class="stat-label">Skin Types Seen</div></div>
-        <div class="stat-card"><div class="stat-num">${Object.keys(concerns).length}</div><div class="stat-label">Unique Concerns</div></div>
-        <div class="stat-card"><div class="stat-num">${Object.keys(productCounts).length}</div><div class="stat-label">Products Recommended</div></div>
-        <div class="stat-card"><div class="stat-num">${Math.round((split.k/(split.k+split.indian||1))*100)}%</div><div class="stat-label">K-Beauty Share</div></div>
+        <div class="stat-card"><div class="stat-num">${rows.length}</div><div class="stat-label">Total Consultations</div><div class="stat-desc">People who completed the full quiz</div></div>
+        <div class="stat-card"><div class="stat-num">${Object.keys(skinTypes).length}</div><div class="stat-label">Skin Types Seen</div><div class="stat-desc">Distinct skin types identified so far</div></div>
+        <div class="stat-card"><div class="stat-num">${Object.keys(concerns).length}</div><div class="stat-label">Unique Concerns</div><div class="stat-desc">Different skin problems reported</div></div>
+        <div class="stat-card"><div class="stat-num">${Object.keys(productCounts).length}</div><div class="stat-label">Products Recommended</div><div class="stat-desc">Unique products suggested across all rituals</div></div>
+        <div class="stat-card"><div class="stat-num">${kPct}%</div><div class="stat-label">K-Beauty Share</div><div class="stat-desc">Of all recommended products are Korean brands</div></div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-eyebrow">What This Tells Us</div>
+        <p>Most people who've taken The Ritual have <strong>${topSkin.toLowerCase()}</strong> skin, and their biggest concern is <strong>${topConcern.toLowerCase()}</strong>. The majority are spending <strong>${topBudget}</strong> on skincare monthly. Interestingly, <strong>${kPct}% of recommended products</strong> are K-beauty — showing how deeply Korean skincare has entered the Indian market. ${rows.length < 10 ? "We're still early — share The Ritual to build richer insights!" : "With " + rows.length + " consultations, clear patterns are starting to emerge."}</p>
       </div>
 
       <div class="charts-grid">
-        <div class="chart-card wide"><div class="chart-title">Consultations Per Day</div><div class="chart-wrap tall"><canvas id="dailyChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-title">Skin Type Distribution</div><div class="chart-wrap"><canvas id="skinChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-title">Top Skin Concerns</div><div class="chart-wrap"><canvas id="concernChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-title">Budget Distribution</div><div class="chart-wrap"><canvas id="budgetChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-title">K-Beauty vs Indian Brands</div><div class="chart-wrap"><canvas id="kbeautyChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-title">Lifestyle Factors</div><div class="chart-wrap"><canvas id="lifestyleChart"></canvas></div></div>
-        <div class="chart-card"><div class="chart-title">Most Recommended Ingredients</div><div class="chart-wrap"><canvas id="ingredientChart"></canvas></div></div>
+        <div class="chart-card wide">
+          <div class="chart-title">Consultations Per Day</div>
+          <div class="chart-subtitle">How many people took the quiz each day — showing growth over time</div>
+          <div class="chart-wrap tall"><canvas id="dailyChart"></canvas></div>
+          <div class="chart-insight">💡 Each point is one day — a rising trend means more people are discovering The Ritual</div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Skin Type Distribution</div>
+          <div class="chart-subtitle">Which skin types are most common among our users</div>
+          <div class="chart-wrap"><canvas id="skinChart"></canvas></div>
+          <div class="chart-insight">💡 The bigger the slice, the more common that skin type is among our users</div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Top Skin Concerns</div>
+          <div class="chart-subtitle">The most frequently reported skin problems — what Indian skin struggles with most</div>
+          <div class="chart-wrap"><canvas id="concernChart"></canvas></div>
+          <div class="chart-insight">💡 Taller bars = more people reported this concern. Use this to understand what matters most to Indian skin</div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Budget Distribution</div>
+          <div class="chart-subtitle">How much users are willing to spend on their skincare monthly</div>
+          <div class="chart-wrap"><canvas id="budgetChart"></canvas></div>
+          <div class="chart-insight">💡 Shows the price sensitivity of our audience — useful for understanding which products to prioritise recommending</div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">K-Beauty vs Indian Brands</div>
+          <div class="chart-subtitle">The split between Korean and Indian products in our recommendations</div>
+          <div class="chart-wrap"><canvas id="kbeautyChart"></canvas></div>
+          <div class="chart-insight">💡 Pink = K-beauty (COSRX, Laneige etc.), Gold = Indian brands (Minimalist, Dot & Key etc.)</div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Lifestyle Factors</div>
+          <div class="chart-subtitle">Daily habits that are impacting skin health — stress, sleep, diet, and environment</div>
+          <div class="chart-wrap"><canvas id="lifestyleChart"></canvas></div>
+          <div class="chart-insight">💡 The most common lifestyle factor affecting Indian skin — often a bigger driver than skin type alone</div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Most Recommended Ingredients</div>
+          <div class="chart-subtitle">The active ingredients our AI recommends most often for Indian skin</div>
+          <div class="chart-wrap"><canvas id="ingredientChart"></canvas></div>
+          <div class="chart-insight">💡 These are the powerhouse ingredients showing up again and again — a snapshot of what Indian skin needs most</div>
+        </div>
       </div>
 
       <div class="products-section">
         <div class="section-label">Most Recommended Products</div>
+        <p class="section-desc">These are the products our AI has recommended most across all consultations — a crowdsourced view of what works best for Indian skin.</p>
         ${topProducts.map(([key,cnt],i)=>{
           const [name,brand,type]=key.split('|||');
           return `<div class="product-row">
@@ -154,26 +240,22 @@ async function init() {
             </div>
           </div>`;
         }).join('')}
+      </div>
+
+      <div class="dashboard-footer">
+        <p>Data is anonymous — no personal information is stored. Every consultation contributes to building a richer picture of Indian skin. ✦</p>
+        <a href="/" class="back-link" style="margin-top:.75rem;display:inline-block">← Take the quiz and add your data</a>
       </div>`;
 
-    // Daily line chart
     makeChart('dailyChart','line', daily.labels, daily.data, {
       singleColor: 'rgba(201,168,76,0.15)',
       dataset: { borderColor:'#C9A84C', backgroundColor:'rgba(201,168,76,0.08)', fill:true, borderWidth:2 }
     });
-
     makeChart('skinChart','doughnut',topN(skinTypes,6).map(x=>x[0]),topN(skinTypes,6).map(x=>x[1]));
     makeChart('concernChart','bar',topN(concerns,6).map(x=>x[0].length>18?x[0].slice(0,18)+'…':x[0]),topN(concerns,6).map(x=>x[1]));
     makeChart('budgetChart','doughnut',topN(budgets,5).map(x=>x[0]),topN(budgets,5).map(x=>x[1]));
-
-    // K-beauty vs Indian donut
-    makeChart('kbeautyChart','doughnut',['K-Beauty','Indian Brands'],[split.k, split.indian], {
-      singleColor: ['#ffb6c1','#C9A84C']
-    });
-
+    makeChart('kbeautyChart','doughnut',['K-Beauty','Indian Brands'],[split.k, split.indian],{ singleColor:['#ffb6c1','#C9A84C'] });
     makeChart('lifestyleChart','bar',topN(lifestyles,6).map(x=>x[0].length>20?x[0].slice(0,20)+'…':x[0]),topN(lifestyles,6).map(x=>x[1]));
-
-    // Ingredients bar
     makeChart('ingredientChart','bar',topIngredients.map(x=>x[0].length>18?x[0].slice(0,18)+'…':x[0]),topIngredients.map(x=>x[1]));
 
   } catch(e) {
