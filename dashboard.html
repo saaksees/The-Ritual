@@ -363,32 +363,43 @@ async function init() {
 
     // Enhanced Analytics - Age Distribution
     const topAges = topN(ages,5);
-    if(topAges.length) {
+    if(topAges.length > 0) {
       makeChart('ageChart','bar',topAges.map(x=>x[0]||'Unknown'),topAges.map(x=>x[1]));
       const largestAge = topAges[0];
       const agePct = Math.round((largestAge[1]/rows.length)*100);
       document.getElementById('ageInsight').textContent = `💡 Users aged ${largestAge[0]||'Unknown'} account for ${agePct}% of all consultations`;
+    } else {
+      document.getElementById('ageInsight').textContent = `💡 No age data yet — complete a new quiz to see age analytics`;
+      document.getElementById('ageChart').parentElement.parentElement.style.opacity = '0.5';
     }
 
     // Enhanced Analytics - City Distribution
     const topCities = topN(cities,7);
-    if(topCities.length) {
+    if(topCities.length > 0) {
       makeChart('cityChart','bar',topCities.map(x=>x[0]||'Unknown'),topCities.map(x=>x[1]));
       const topCity = topCities[0];
       const cityPct = Math.round((topCity[1]/rows.length)*100);
       document.getElementById('cityInsight').textContent = `💡 ${topCity[0]||'Unknown'} contributes ${cityPct}% of all consultations`;
+    } else {
+      document.getElementById('cityInsight').textContent = `💡 No city data yet — complete a new quiz to see geographic analytics`;
+      document.getElementById('cityChart').parentElement.parentElement.style.opacity = '0.5';
     }
 
     // Age × Concern Matrix
     const ageConcernData = analyzeAgeConcerns(rows);
     let ageConcernHTML = '<table class="matrix-table"><thead><tr><th>Age Group</th><th>Most Common Concern</th><th>Count</th></tr></thead><tbody>';
-    Object.entries(ageConcernData).forEach(([age, concernObj]) => {
-      const topConcernEntry = Object.entries(concernObj).sort((a,b)=>b[1]-a[1])[0];
-      if(topConcernEntry) {
-        ageConcernHTML += `<tr><td>${age}</td><td>${topConcernEntry[0]}</td><td>${topConcernEntry[1]}</td></tr>`;
-      }
-    });
-    ageConcernHTML += '</tbody></table>';
+    const ageEntries = Object.entries(ageConcernData);
+    if(ageEntries.length > 0) {
+      ageEntries.forEach(([age, concernObj]) => {
+        const topConcernEntry = Object.entries(concernObj).sort((a,b)=>b[1]-a[1])[0];
+        if(topConcernEntry) {
+          ageConcernHTML += `<tr><td>${age}</td><td>${topConcernEntry[0]}</td><td>${topConcernEntry[1]}</td></tr>`;
+        }
+      });
+      ageConcernHTML += '</tbody></table>';
+    } else {
+      ageConcernHTML += '<tr><td colspan="3" style="text-align:center;padding:2rem;font-style:italic">No age data available yet — complete new consultations to see patterns</td></tr></tbody></table>';
+    }
     document.getElementById('ageConcernMatrix').innerHTML = ageConcernHTML;
 
     // City × Concern Matrix
@@ -399,13 +410,17 @@ async function init() {
       const bMax = Math.max(...Object.values(b[1]));
       return bMax - aMax;
     }).slice(0,10);
-    topCitiesForMatrix.forEach(([city, concernObj]) => {
-      const topConcernEntry = Object.entries(concernObj).sort((a,b)=>b[1]-a[1])[0];
-      if(topConcernEntry) {
-        cityConcernHTML += `<tr><td>${city}</td><td>${topConcernEntry[0]}</td><td>${topConcernEntry[1]}</td></tr>`;
-      }
-    });
-    cityConcernHTML += '</tbody></table>';
+    if(topCitiesForMatrix.length > 0) {
+      topCitiesForMatrix.forEach(([city, concernObj]) => {
+        const topConcernEntry = Object.entries(concernObj).sort((a,b)=>b[1]-a[1])[0];
+        if(topConcernEntry) {
+          cityConcernHTML += `<tr><td>${city}</td><td>${topConcernEntry[0]}</td><td>${topConcernEntry[1]}</td></tr>`;
+        }
+      });
+      cityConcernHTML += '</tbody></table>';
+    } else {
+      cityConcernHTML += '<tr><td colspan="3" style="text-align:center;padding:2rem;font-style:italic">No city data available yet — complete new consultations to see geographic patterns</td></tr></tbody></table>';
+    }
     document.getElementById('cityConcernMatrix').innerHTML = cityConcernHTML;
 
     // Ingredient Penetration
