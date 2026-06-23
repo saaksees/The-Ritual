@@ -144,9 +144,50 @@ function analyzeCityConcerns(rows){const matrix={};rows.forEach(r=>{const city=r
 
 function analyzeIngredientPenetration(rows){const ingredientCounts={};const totalRoutines=rows.length;rows.forEach(r=>{const ingredients=new Set();(r.recommended_products||[]).forEach(p=>{(p.key_actives||[]).forEach(ing=>ingredients.add(ing.toLowerCase()));});ingredients.forEach(ing=>{ingredientCounts[ing]=(ingredientCounts[ing]||0)+1;});});const penetration={};Object.entries(ingredientCounts).forEach(([ing,cnt])=>{penetration[ing]=Math.round((cnt/totalRoutines)*100);});return penetration;}
 
-async function generateMarketInsights(stats){const prompt=`Analyze these skincare consultation statistics and generate 6 executive business intelligence insights for the Indian skincare market:
-Total: ${stats.total}, Ages: ${JSON.stringify(stats.ages)}, Cities: ${JSON.stringify(stats.cities)}, Concerns: ${JSON.stringify(stats.concerns)}, K-Beauty: ${stats.kbeautyPct}%
-Return as JSON array: ["insight1","insight2",...]`;try{const res=await fetch('/api/recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,answers:{},is_chat:true})});const data=await res.json();let text=data.content?.map(c=>c.text||'').join('').trim().replace(/```json|```/g,'').trim();const start=text.indexOf('[');const end=text.lastIndexOf(']');if(start!==-1&&end!==-1)text=text.substring(start,end+1);return JSON.parse(text);}catch(e){return["Unable to generate insights."];}}
+async function generateMarketInsights(stats){
+  // Check if we have enough data
+  if(!stats || stats.total < 3) {
+    return ["Insufficient data for insights. Need at least 3 consultations."];
+  }
+  
+  const prompt=`Analyze these skincare consultation statistics and generate 6 executive business intelligence insights for the Indian skincare market:
+Total Consultations: ${stats.total}
+Top Concerns: ${JSON.stringify(stats.concerns)}
+K-Beauty Products: ${stats.kbeautyPct}%
+Ages (if available): ${JSON.stringify(stats.ages)}
+Cities (if available): ${JSON.stringify(stats.cities)}
+
+Return ONLY a JSON array of 6 insights as strings. Example format:
+["Insight about top concern","Insight about K-beauty penetration","Insight about market trends","Insight about consumer behavior","Insight about product recommendations","Insight about demographics"]`;
+
+  try{
+    const res=await fetch('/api/recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,answers:{},is_chat:true})});
+    if(!res.ok) throw new Error(`API error: ${res.status}`);
+    const data=await res.json();
+    let text=data.content?.map(c=>c.text||'').join('').trim();
+    if(!text) throw new Error('Empty response from AI');
+    
+    // Remove markdown code blocks
+    text = text.replace(/```json|```/g,'').trim();
+    
+    // Find JSON array
+    const start=text.indexOf('[');
+    const end=text.lastIndexOf(']');
+    if(start===-1||end===-1) throw new Error('No JSON array found in response');
+    
+    text=text.substring(start,end+1);
+    const insights = JSON.parse(text);
+    
+    if(!Array.isArray(insights) || insights.length === 0) {
+      throw new Error('Invalid insights format');
+    }
+    
+    return insights;
+  }catch(e){
+    console.error('Market insights error:', e);
+    return [`Unable to generate insights: ${e.message}. Try refreshing the page and clicking again.`];
+  }
+}
 
 async function loadMarketInsights() {
   const btn = event.target;
@@ -156,7 +197,19 @@ async function loadMarketInsights() {
   container.innerHTML = '<div class="insights-loading">✨ AI is analyzing your data...</div>';
   
   try {
+    if(!window._dashboardStats) {
+      throw new Error('Dashboard stats not loaded. Please refresh the page.');
+    }
+    
     const insights = await generateMarketInsights(window._dashboardStats);
+    
+    if(insights.length === 1 && insights[0].includes('Unable to generate')) {
+      // This is an error message, display it differently
+      container.innerHTML = `<div class="empty">${insights[0]}</div>`;
+      btn.textContent = 'Try Again';
+      return;
+    }
+    
     let html = '<div style="display:grid;gap:1rem;margin-top:1.5rem">';
     insights.forEach((insight, i) => {
       const icons = ['💡','📊','🎯','✨','🔍','💰','🌟','📈'];
@@ -169,7 +222,8 @@ async function loadMarketInsights() {
     container.innerHTML = html;
     btn.textContent = 'Refresh Insights';
   } catch(e) {
-    container.innerHTML = '<div class="empty">Failed to generate insights. Try again.</div>';
+    console.error('Load insights error:', e);
+    container.innerHTML = `<div class="empty">Failed to generate insights: ${e.message}<br>Try refreshing the page.</div>`;
     btn.textContent = 'Try Again';
   } finally {
     btn.disabled = false;
