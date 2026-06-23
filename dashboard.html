@@ -36,7 +36,7 @@ h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;letter-spacing:.08em;margi
 .product-count{font-size:.75rem;color:var(--text-dim);margin-top:.3rem;text-align:right}
 .loading{text-align:center;padding:4rem;color:var(--text-muted);font-style:italic}
 .empty{text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;font-size:.9rem}
-.dashboard-footer{max-width:1100px;margin:3rem auto 1rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--text-dim);font-size:.8rem;font-style:italic;line-height:1.9}
+.dashboard-footer{max-width:1100px;margin:3rem auto 1rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center;color:var(--text-dim);font-size:.8rem;font-style:italic;line-height:1.9}.executive-summary{max-width:1100px;margin:0 auto 3rem;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.02));border:1px solid var(--border-strong);padding:2.5rem;box-shadow:0 4px 16px rgba(0,0,0,.2)}.exec-title{font-size:.7rem;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;margin-bottom:1.25rem;text-align:center}.exec-text{font-size:1.05rem;color:var(--text);line-height:2;text-align:center;font-style:italic}.insight-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:1.5rem 1.75rem;margin-bottom:1rem;transition:border-color .2s}.insight-card:hover{border-color:var(--border-strong)}.insight-icon{font-size:1.2rem;margin-bottom:.75rem}.insight-text{font-size:.9rem;color:var(--text-muted);line-height:1.85}.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:1100px;margin:0 auto 2.5rem}.kpi-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:1.5rem;text-align:center}.kpi-value{font-size:2rem;color:var(--gold);margin-bottom:.5rem}.kpi-label{font-size:.7rem;letter-spacing:.2em;color:var(--text-dim);text-transform:uppercase}.btn-generate{background:linear-gradient(135deg,var(--gold-dark),var(--gold));border:none;color:var(--navy);padding:1rem 2.5rem;font-family:'Georgia',serif;font-size:.85rem;letter-spacing:.15em;cursor:pointer;transition:all .3s;text-transform:uppercase;margin:2rem auto;display:block;box-shadow:0 4px 12px rgba(201,168,76,.3)}.btn-generate:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,.4)}.insights-loading{text-align:center;padding:2rem;color:var(--text-muted);font-style:italic}.matrix-table{width:100%;border-collapse:collapse;margin:1.5rem 0}.matrix-table th,.matrix-table td{padding:.85rem 1rem;border:1px solid var(--border);text-align:left;font-size:.85rem}.matrix-table th{background:rgba(201,168,76,.08);color:var(--gold);font-weight:400;letter-spacing:.1em;text-transform:uppercase;font-size:.7rem}.matrix-table td{color:var(--text-muted)}
 </style></head><body>
 <header><div class="eyebrow">The Ritual</div><h1>Skin Insights</h1><p class="subtitle">Live data from every ritual consultation</p><a class="back-link" href="/">← Back to The Ritual</a></header>
 <div id="content"><div class="loading">Loading insights…</div></div>
@@ -138,6 +138,44 @@ function kbeautySplit(rows) {
   return { k, indian };
 }
 
+function analyzeAgeConcerns(rows){const matrix={};rows.forEach(r=>{const age=r.age_group||'Unknown';if(!matrix[age])matrix[age]={};(r.concerns||[]).forEach(c=>{matrix[age][c]=(matrix[age][c]||0)+1;});});return matrix;}
+
+function analyzeCityConcerns(rows){const matrix={};rows.forEach(r=>{const city=r.city||'Unknown';if(!matrix[city])matrix[city]={};(r.concerns||[]).forEach(c=>{matrix[city][c]=(matrix[city][c]||0)+1;});});return matrix;}
+
+function analyzeIngredientPenetration(rows){const ingredientCounts={};const totalRoutines=rows.length;rows.forEach(r=>{const ingredients=new Set();(r.recommended_products||[]).forEach(p=>{(p.key_actives||[]).forEach(ing=>ingredients.add(ing.toLowerCase()));});ingredients.forEach(ing=>{ingredientCounts[ing]=(ingredientCounts[ing]||0)+1;});});const penetration={};Object.entries(ingredientCounts).forEach(([ing,cnt])=>{penetration[ing]=Math.round((cnt/totalRoutines)*100);});return penetration;}
+
+async function generateMarketInsights(stats){const prompt=`Analyze these skincare consultation statistics and generate 6 executive business intelligence insights for the Indian skincare market:
+Total: ${stats.total}, Ages: ${JSON.stringify(stats.ages)}, Cities: ${JSON.stringify(stats.cities)}, Concerns: ${JSON.stringify(stats.concerns)}, K-Beauty: ${stats.kbeautyPct}%
+Return as JSON array: ["insight1","insight2",...]`;try{const res=await fetch('/api/recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,answers:{},is_chat:true})});const data=await res.json();let text=data.content?.map(c=>c.text||'').join('').trim().replace(/```json|```/g,'').trim();const start=text.indexOf('[');const end=text.lastIndexOf(']');if(start!==-1&&end!==-1)text=text.substring(start,end+1);return JSON.parse(text);}catch(e){return["Unable to generate insights."];}}
+
+async function loadMarketInsights() {
+  const btn = event.target;
+  const container = document.getElementById('marketInsights');
+  btn.disabled = true;
+  btn.textContent = 'Generating Insights...';
+  container.innerHTML = '<div class="insights-loading">✨ AI is analyzing your data...</div>';
+  
+  try {
+    const insights = await generateMarketInsights(window._dashboardStats);
+    let html = '<div style="display:grid;gap:1rem;margin-top:1.5rem">';
+    insights.forEach((insight, i) => {
+      const icons = ['💡','📊','🎯','✨','🔍','💰','🌟','📈'];
+      html += `<div class="insight-card">
+        <div class="insight-icon">${icons[i%icons.length]}</div>
+        <div class="insight-text">${insight}</div>
+      </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+    btn.textContent = 'Refresh Insights';
+  } catch(e) {
+    container.innerHTML = '<div class="empty">Failed to generate insights. Try again.</div>';
+    btn.textContent = 'Try Again';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 async function init() {
   try {
     const rows = await fetchData();
@@ -150,6 +188,8 @@ async function init() {
     const concerns = count(rows,'concerns');
     const budgets = count(rows,'budget');
     const lifestyles = count(rows,'lifestyle');
+    const ages = count(rows,'age_group');
+    const cities = count(rows,'city');
     const productCounts = countProducts(rows);
     const ingredientCounts = countIngredients(rows);
     const topProducts = topN(productCounts,8);
@@ -223,6 +263,69 @@ async function init() {
         </div>
       </div>
 
+      <div id="enhancedAnalytics">
+        
+        <div class="charts-grid" style="margin-top:3rem">
+          <div class="chart-card">
+            <div class="chart-title">Age Distribution</div>
+            <div class="chart-subtitle">Which age groups are using The Ritual most</div>
+            <div class="chart-wrap"><canvas id="ageChart"></canvas></div>
+            <div class="chart-insight" id="ageInsight">💡 Loading insight...</div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Top Cities</div>
+            <div class="chart-subtitle">Geographic distribution of our users across India</div>
+            <div class="chart-wrap"><canvas id="cityChart"></canvas></div>
+            <div class="chart-insight" id="cityInsight">💡 Loading insight...</div>
+          </div>
+        </div>
+
+        <div style="max-width:1100px;margin:3rem auto;text-align:center;background:rgba(255,255,255,.02);border:1px solid var(--border);padding:3rem 2rem">
+          <div class="eyebrow" style="margin-bottom:1rem">Ritual Consumer Intelligence™</div>
+          <p style="color:var(--text-muted);font-size:.95rem;margin-bottom:2rem;font-style:italic">AI-powered business insights from your consultation data</p>
+          <button class="btn-generate" onclick="loadMarketInsights()">Generate Market Insights</button>
+          <div id="marketInsights" style="margin-top:2rem"></div>
+        </div>
+
+        <div style="max-width:1100px;margin:3rem auto">
+          <div class="section-label">Age × Concern Analysis</div>
+          <p class="section-desc">Which skin concerns dominate each age group — showing how priorities shift over time</p>
+          <div id="ageConcernMatrix"></div>
+        </div>
+
+        <div style="max-width:1100px;margin:3rem auto">
+          <div class="section-label">City × Concern Analysis</div>
+          <p class="section-desc">How geography influences skin problems — humidity, pollution, and climate at play</p>
+          <div id="cityConcernMatrix"></div>
+        </div>
+
+        <div style="max-width:1100px;margin:3rem auto">
+          <div class="section-label">Ingredient Penetration</div>
+          <p class="section-desc">What percentage of all routines include each ingredient — the market leaders</p>
+          <div id="ingredientPenetration"></div>
+        </div>
+
+        <div class="kpi-grid" style="margin-top:3rem">
+          <div class="kpi-card">
+            <div class="kpi-value" id="avgConcerns">-</div>
+            <div class="kpi-label">Avg Concerns Selected</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="avgProducts">-</div>
+            <div class="kpi-label">Avg Products Recommended</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="topLifestyle">-</div>
+            <div class="kpi-label">Top Lifestyle Factor</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value" id="topSkinKPI">-</div>
+            <div class="kpi-label">Most Common Skin Type</div>
+          </div>
+        </div>
+
+      </div>
+
       <div class="products-section">
         <div class="section-label">Most Recommended Products</div>
         <p class="section-desc">These are the products our AI has recommended most across all consultations — a crowdsourced view of what works best for Indian skin.</p>
@@ -257,6 +360,78 @@ async function init() {
     makeChart('kbeautyChart','doughnut',['K-Beauty','Indian Brands'],[split.k, split.indian],{ singleColor:['#ffb6c1','#C9A84C'] });
     makeChart('lifestyleChart','bar',topN(lifestyles,6).map(x=>x[0].length>20?x[0].slice(0,20)+'…':x[0]),topN(lifestyles,6).map(x=>x[1]));
     makeChart('ingredientChart','bar',topIngredients.map(x=>x[0].length>18?x[0].slice(0,18)+'…':x[0]),topIngredients.map(x=>x[1]));
+
+    // Enhanced Analytics - Age Distribution
+    const topAges = topN(ages,5);
+    if(topAges.length) {
+      makeChart('ageChart','bar',topAges.map(x=>x[0]||'Unknown'),topAges.map(x=>x[1]));
+      const largestAge = topAges[0];
+      const agePct = Math.round((largestAge[1]/rows.length)*100);
+      document.getElementById('ageInsight').textContent = `💡 Users aged ${largestAge[0]||'Unknown'} account for ${agePct}% of all consultations`;
+    }
+
+    // Enhanced Analytics - City Distribution
+    const topCities = topN(cities,7);
+    if(topCities.length) {
+      makeChart('cityChart','bar',topCities.map(x=>x[0]||'Unknown'),topCities.map(x=>x[1]));
+      const topCity = topCities[0];
+      const cityPct = Math.round((topCity[1]/rows.length)*100);
+      document.getElementById('cityInsight').textContent = `💡 ${topCity[0]||'Unknown'} contributes ${cityPct}% of all consultations`;
+    }
+
+    // Age × Concern Matrix
+    const ageConcernData = analyzeAgeConcerns(rows);
+    let ageConcernHTML = '<table class="matrix-table"><thead><tr><th>Age Group</th><th>Most Common Concern</th><th>Count</th></tr></thead><tbody>';
+    Object.entries(ageConcernData).forEach(([age, concernObj]) => {
+      const topConcernEntry = Object.entries(concernObj).sort((a,b)=>b[1]-a[1])[0];
+      if(topConcernEntry) {
+        ageConcernHTML += `<tr><td>${age}</td><td>${topConcernEntry[0]}</td><td>${topConcernEntry[1]}</td></tr>`;
+      }
+    });
+    ageConcernHTML += '</tbody></table>';
+    document.getElementById('ageConcernMatrix').innerHTML = ageConcernHTML;
+
+    // City × Concern Matrix
+    const cityConcernData = analyzeCityConcerns(rows);
+    let cityConcernHTML = '<table class="matrix-table"><thead><tr><th>City</th><th>Most Common Concern</th><th>Count</th></tr></thead><tbody>';
+    const topCitiesForMatrix = Object.entries(cityConcernData).sort((a,b)=>{
+      const aMax = Math.max(...Object.values(a[1]));
+      const bMax = Math.max(...Object.values(b[1]));
+      return bMax - aMax;
+    }).slice(0,10);
+    topCitiesForMatrix.forEach(([city, concernObj]) => {
+      const topConcernEntry = Object.entries(concernObj).sort((a,b)=>b[1]-a[1])[0];
+      if(topConcernEntry) {
+        cityConcernHTML += `<tr><td>${city}</td><td>${topConcernEntry[0]}</td><td>${topConcernEntry[1]}</td></tr>`;
+      }
+    });
+    cityConcernHTML += '</tbody></table>';
+    document.getElementById('cityConcernMatrix').innerHTML = cityConcernHTML;
+
+    // Ingredient Penetration
+    const penetration = analyzeIngredientPenetration(rows);
+    const topPenetration = Object.entries(penetration).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    let penetrationHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1.5rem">';
+    topPenetration.forEach(([ing, pct]) => {
+      penetrationHTML += `<div style="background:rgba(255,255,255,.02);border:1px solid var(--border);padding:1.25rem;text-align:center">
+        <div style="font-size:2rem;color:var(--gold);margin-bottom:.5rem">${pct}%</div>
+        <div style="font-size:.8rem;color:var(--text-muted);text-transform:capitalize">${ing}</div>
+      </div>`;
+    });
+    penetrationHTML += '</div>';
+    document.getElementById('ingredientPenetration').innerHTML = penetrationHTML;
+
+    // Consultation Behavior KPIs
+    const avgConcernsCount = rows.reduce((sum,r)=>(r.concerns||[]).length+sum,0)/rows.length;
+    const avgProductsCount = rows.reduce((sum,r)=>(r.recommended_products||[]).length+sum,0)/rows.length;
+    const topLifestyleEntry = topN(lifestyles,1)[0];
+    document.getElementById('avgConcerns').textContent = avgConcernsCount.toFixed(1);
+    document.getElementById('avgProducts').textContent = avgProductsCount.toFixed(1);
+    document.getElementById('topLifestyle').textContent = topLifestyleEntry?.[0]?.slice(0,15) || 'N/A';
+    document.getElementById('topSkinKPI').textContent = topSkin.slice(0,12);
+
+    // Store stats globally for market insights
+    window._dashboardStats = { total: rows.length, ages: Object.fromEntries(topN(ages,5)), cities: Object.fromEntries(topN(cities,7)), concerns: Object.fromEntries(topN(concerns,6)), kbeautyPct: kPct };
 
   } catch(e) {
     document.getElementById('content').innerHTML = `<div class="empty">Error loading data: ${e.message}</div>`;
