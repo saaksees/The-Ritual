@@ -2,6 +2,10 @@
 
 /* ── PERSONA CARD ── */
 .persona-card{max-width:820px;margin:0 auto 2.5rem;border:2px solid var(--border-strong);background:linear-gradient(135deg,rgba(201,168,76,.08) 0%,rgba(10,14,26,.6) 100%);padding:2.5rem;position:relative;overflow:hidden;border-radius:4px;box-shadow:0 8px 32px rgba(0,0,0,.3)}.persona-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}.persona-header{display:flex;align-items:center;gap:2rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}.persona-icon-large{font-size:3.5rem;line-height:1;flex-shrink:0;filter:drop-shadow(0 4px 12px rgba(201,168,76,.4))}.persona-title-block{flex:1}.persona-eyebrow{font-size:.62rem;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:.5rem}.persona-name{font-size:clamp(1.5rem,4vw,2.2rem);color:var(--text);font-weight:400;letter-spacing:.05em;margin-bottom:.6rem;line-height:1.2}.persona-tagline{font-size:.95rem;color:var(--gold-light);font-style:italic;letter-spacing:.02em}.persona-description{font-size:1rem;color:var(--text);line-height:1.95;margin-bottom:2rem;font-style:italic;padding:1.5rem;background:rgba(255,255,255,.02);border-left:3px solid var(--gold);border-radius:2px}.persona-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem}.persona-section{background:rgba(255,255,255,.015);border:1px solid var(--border);padding:1.5rem;border-radius:2px}.persona-section-label{font-size:.7rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;font-weight:600}.persona-list-item{font-size:.88rem;color:var(--text-muted);line-height:1.8;margin-bottom:.5rem;padding-left:.5rem}.strength-item{color:var(--text)}.challenge-item{color:var(--text-dim)}.persona-focus{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--border);padding:1.5rem;border-radius:2px;margin-bottom:1.5rem}.persona-focus-label{font-size:.7rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;text-align:center}.persona-focus-tags{display:flex;flex-wrap:wrap;gap:.65rem;justify-content:center}.persona-focus-tag{font-size:.82rem;color:var(--text);border:1px solid var(--gold);background:rgba(201,168,76,.08);padding:.5rem 1.25rem;letter-spacing:.08em;border-radius:2px;transition:all .3s}.persona-focus-tag:hover{background:rgba(201,168,76,.15);transform:translateY(-2px)}.persona-share-btn{width:100%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));border:none;color:var(--navy);padding:1rem;font-family:'Georgia',serif;font-size:.85rem;letter-spacing:.2em;cursor:pointer;text-transform:uppercase;border-radius:2px;transition:all .3s;font-weight:600;display:flex;align-items:center;justify-content:center;gap:.5rem;box-shadow:0 4px 16px rgba(201,168,76,.3)}.persona-share-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(201,168,76,.5)}
+
+/* ── HEALTH SCORE ── */
+.health-score-card{max-width:820px;margin:0 auto 2.5rem;border:2px solid var(--border-strong);background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(10,14,26,.7));padding:2.5rem;border-radius:4px;box-shadow:0 8px 32px rgba(0,0,0,.3);position:relative;overflow:hidden}.health-score-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}.health-score-header{text-align:center;margin-bottom:2.5rem}.health-score-eyebrow{font-size:.68rem;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}.health-score-main{display:flex;align-items:center;justify-content:center;gap:3rem;margin-bottom:2.5rem;flex-wrap:wrap}.health-score-circle{position:relative;width:180px;height:180px;flex-shrink:0}.health-score-svg{transform:rotate(-90deg)}.health-score-bg{fill:none;stroke:rgba(255,255,255,.08);stroke-width:12}.health-score-progress{fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1.5s ease,stroke 1s ease}.health-score-value{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}.health-score-num{font-size:3rem;color:var(--gold);font-weight:400;line-height:1;display:block}.health-score-max{font-size:1.2rem;color:var(--text-dim);font-weight:300}.health-score-info{flex:1;min-width:280px}.health-score-level{font-size:1.8rem;color:var(--text);margin-bottom:.5rem;font-weight:400}.health-score-level-sub{font-size:.85rem;color:var(--text-muted);font-style:italic;letter-spacing:.05em}.health-score-insight{background:rgba(255,255,255,.02);border-left:3px solid var(--gold);padding:1.25rem 1.5rem;margin:2rem 0;font-size:.95rem;color:var(--text);line-height:1.9;font-style:italic}.health-score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}.health-score-section{background:rgba(255,255,255,.015);border:1px solid var(--border);padding:1.5rem;border-radius:2px}.health-score-section-label{font-size:.7rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem;font-weight:600}.health-score-list-item{font-size:.88rem;color:var(--text-muted);line-height:1.8;margin-bottom:.5rem;padding-left:.5rem}.health-strength{color:var(--text)}.health-focus{color:var(--text-dim)}
+
 </style></head>
 <body>
 <a href="/dashboard.html" class="nav-insights">Insights ✦</a>
@@ -221,6 +225,211 @@ function getPersonaIcon(name) {
   return '✦';
 }
 
+// ── HEALTH SCORE CALCULATION ──
+function calculateHealthScore(answersObj) {
+  let score = 70; // Start at baseline
+  let strengths = [];
+  let focusAreas = [];
+  
+  // Analyze concerns (-5 per concern, max -15)
+  const concerns = answersObj.concerns || [];
+  const concernPenalty = Math.min(concerns.length * 5, 15);
+  score -= concernPenalty;
+  if (concerns.length >= 4) focusAreas.push('Multiple skin concerns need attention');
+  
+  // Check for severe issues
+  const acneTypes = answersObj.acne_type || [];
+  if (acneTypes.some(a => a.toLowerCase().includes('cystic'))) {
+    score -= 8;
+    focusAreas.push('Inflammatory acne management');
+  }
+  
+  // Lifestyle factors
+  const lifestyle = answersObj.lifestyle || [];
+  const positiveLifestyle = lifestyle.filter(l => 
+    l.includes('well') || l.includes('exercise') || l.includes('sleep enough')
+  );
+  const negativeLifestyle = lifestyle.filter(l =>
+    l.includes('stress') || l.includes('under 6 hours') || l.includes('less than 2L')
+  );
+  
+  score += positiveLifestyle.length * 3;
+  score -= negativeLifestyle.length * 4;
+  
+  if (positiveLifestyle.length > 0) strengths.push('Healthy lifestyle habits');
+  if (negativeLifestyle.some(l => l.includes('stress'))) focusAreas.push('Stress management');
+  if (negativeLifestyle.some(l => l.includes('water'))) focusAreas.push('Hydration consistency');
+  
+  // Sun exposure
+  const sunExposure = answersObj.sun_exposure || '';
+  if (sunExposure.includes('Rarely')) {
+    score += 5;
+    strengths.push('Minimal sun damage risk');
+  } else if (sunExposure.includes('A lot')) {
+    score -= 10;
+    focusAreas.push('Daily SPF use critical');
+  } else if (sunExposure.includes('Moderate')) {
+    score -= 3;
+    focusAreas.push('Consistent SPF protection');
+  }
+  
+  // Actives experience (shows skincare knowledge)
+  const actives = answersObj.actives_experience || [];
+  if (actives.length === 0 || actives.some(a => a.includes('Never'))) {
+    score -= 5;
+    focusAreas.push('Gradual active introduction');
+  } else if (actives.length >= 3) {
+    score += 5;
+    strengths.push('Good skincare knowledge');
+  }
+  
+  // Sensitivities
+  const sensitivities = answersObj.sensitivities || [];
+  const hasSensitivities = sensitivities.filter(s => !s.includes('No known'));
+  if (hasSensitivities.length === 0) {
+    score += 5;
+    strengths.push('Strong skin resilience');
+  } else if (hasSensitivities.length >= 3) {
+    score -= 8;
+    focusAreas.push('Barrier repair focus');
+  }
+  
+  // Routine time (consistency indicator)
+  const routineTime = answersObj.routine_time || '';
+  if (routineTime.includes('15') || routineTime.includes('long as it takes')) {
+    score += 5;
+    strengths.push('Consistent skincare habits');
+  } else if (routineTime.includes('Under 3')) {
+    score -= 3;
+  }
+  
+  // Skin type considerations
+  const skinType = answersObj.skin_type || '';
+  if (skinType.includes('Normal')) {
+    score += 8;
+    strengths.push('Naturally balanced skin');
+  } else if (skinType.includes('Sensitive')) {
+    score -= 5;
+    focusAreas.push('Gentle product selection');
+  }
+  
+  // Ensure score stays within bounds
+  score = Math.max(0, Math.min(100, Math.round(score)));
+  
+  // Determine level and color
+  let level, levelSub, color;
+  if (score >= 80) {
+    level = 'Excellent';
+    levelSub = 'Your skin is in great condition';
+    color = '#6cc86c';
+  } else if (score >= 60) {
+    level = 'Moderate';
+    levelSub = 'Room for improvement with focused care';
+    color = '#C9A84C';
+  } else if (score >= 40) {
+    level = 'Needs Attention';
+    levelSub = 'Prioritize key concerns';
+    color = '#e0a050';
+  } else {
+    level = 'High Risk';
+    levelSub = 'Immediate intervention recommended';
+    color = '#c88';
+  }
+  
+  // Ensure we have at least 2 strengths and focus areas
+  if (strengths.length === 0) strengths = ['Committed to skin health', 'Seeking professional guidance'];
+  if (focusAreas.length === 0) focusAreas = ['Maintain current routine', 'Monitor for changes'];
+  
+  // Limit to 3 items each
+  strengths = strengths.slice(0, 3);
+  focusAreas = focusAreas.slice(0, 3);
+  
+  return {
+    score,
+    level,
+    levelSub,
+    color,
+    strengths,
+    focusAreas,
+    insight: generateHealthInsight(score, answersObj)
+  };
+}
+
+function generateHealthInsight(score, answersObj) {
+  const concerns = answersObj.concerns || [];
+  const sunExposure = answersObj.sun_exposure || '';
+  const lifestyle = answersObj.lifestyle || [];
+  
+  if (score >= 80) {
+    return 'Your skin shows strong resilience and healthy habits. Continue your current routine while monitoring for seasonal changes.';
+  } else if (score >= 60) {
+    if (sunExposure.includes('A lot') || sunExposure.includes('Moderate')) {
+      return 'Your skin shows good potential, but sun exposure may accelerate aging and pigmentation. Daily SPF is essential.';
+    } else if (lifestyle.some(l => l.includes('stress'))) {
+      return 'Your skin has solid foundation, but stress may be contributing to inflammation and barrier disruption.';
+    } else {
+      return 'Your skin shows moderate health with room for targeted improvements in your routine.';
+    }
+  } else if (score >= 40) {
+    if (concerns.length >= 4) {
+      return 'Multiple concerns suggest your skin barrier may need support. Focus on gentler, barrier-repairing products first.';
+    } else {
+      return 'Your skin needs focused attention on key concerns. A consistent routine with targeted actives will help.';
+    }
+  } else {
+    return 'Your skin requires immediate attention. Consider consulting a dermatologist alongside this routine for optimal results.';
+  }
+}
+
+function renderHealthScoreCard(healthScore) {
+  const circumference = 2 * Math.PI * 70; // radius = 70
+  const offset = circumference - (healthScore.score / 100) * circumference;
+  
+  return `<div class="health-score-card">
+    <div class="health-score-eyebrow">Ritual Skin Health Score™</div>
+    
+    <div class="health-score-main">
+      <div class="health-score-circle">
+        <svg class="health-score-svg" width="180" height="180" viewBox="0 0 180 180">
+          <circle class="health-score-bg" cx="90" cy="90" r="70"></circle>
+          <circle 
+            class="health-score-progress" 
+            cx="90" 
+            cy="90" 
+            r="70"
+            stroke="${healthScore.color}"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${offset}">
+          </circle>
+        </svg>
+        <div class="health-score-value">
+          <span class="health-score-num">${healthScore.score}</span>
+          <span class="health-score-max">/100</span>
+        </div>
+      </div>
+      
+      <div class="health-score-info">
+        <div class="health-score-level" style="color:${healthScore.color}">${healthScore.level}</div>
+        <div class="health-score-level-sub">${healthScore.levelSub}</div>
+      </div>
+    </div>
+    
+    <div class="health-score-insight">${healthScore.insight}</div>
+    
+    <div class="health-score-grid">
+      <div class="health-score-section">
+        <div class="health-score-section-label">✓ Strengths</div>
+        ${healthScore.strengths.map(s => `<div class="health-score-list-item health-strength">• ${s}</div>`).join('')}
+      </div>
+      
+      <div class="health-score-section">
+        <div class="health-score-section-label">⚡ Focus Areas</div>
+        ${healthScore.focusAreas.map(f => `<div class="health-score-list-item health-focus">• ${f}</div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
 async function sharePersona() {
   const persona = window._userPersona;
   if (!persona) return;
@@ -263,6 +472,26 @@ async function logPersonaToSupabase(rowId, personaName) {
     });
   } catch (e) {
     console.error('Failed to log persona:', e);
+  }
+}
+
+async function logHealthScoreToSupabase(rowId, score) {
+  const SUPABASE_URL = 'https://phoyiuuhpkmtculpqbpj.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBob3lpdXVocGttdGN1bHBxYnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwOTQ5NDYsImV4cCI6MjA1MjY3MDk0Nn0.qJbLiTXKxwV6lZlNB9IlEH5PK3YNfX7MwUmGRgfYGYk';
+  
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/quiz_responses?id=eq.${rowId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ skin_score: score })
+    });
+  } catch (e) {
+    console.error('Failed to log health score:', e);
   }
 }
 
@@ -351,6 +580,17 @@ async function renderResults(d){
   }
   
   html += renderPersonaCard(persona);
+
+  // ── HEALTH SCORE ──
+  const healthScore = calculateHealthScore(answersObj);
+  window._userHealthScore = healthScore;
+  
+  // Log health score to Supabase
+  if (rowId) {
+    logHealthScoreToSupabase(rowId, healthScore.score);
+  }
+  
+  html += renderHealthScoreCard(healthScore);
 
   html+=`<div class="season-bar"><span class="season-label">Season</span><button class="season-btn ${currentSeason==='Summer'?'active':''}" data-season="Summer" onclick="switchSeason('Summer')">☀ Summer</button><button class="season-btn ${currentSeason==='Monsoon'?'active':''}" data-season="Monsoon" onclick="switchSeason('Monsoon')">🌧 Monsoon</button><button class="season-btn ${currentSeason==='Winter'?'active':''}" data-season="Winter" onclick="switchSeason('Winter')">❄ Winter</button><span class="season-note" id="seasonNote">${seasonNotes[currentSeason]}</span></div>`;
   if(d.skin_diagnosis){html+=`<div class="skin-diagnosis"><p>${d.skin_diagnosis.replace(/\b(your skin|you|your)\b/gi,m=>`<strong>${m}</strong>`)}</p></div>`;}
