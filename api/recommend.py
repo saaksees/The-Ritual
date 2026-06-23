@@ -12,7 +12,6 @@ def call_groq(prompt):
         "max_tokens": 4000,
         "temperature": 0.7
     }).encode()
-    
     req = urllib.request.Request(
         "https://api.groq.com/openai/v1/chat/completions",
         data=payload,
@@ -23,15 +22,15 @@ def call_groq(prompt):
         },
         method="POST"
     )
-    
     with urllib.request.urlopen(req) as res:
         data = json.loads(res.read())
     return data["choices"][0]["message"]["content"]
 
 def log_to_supabase(answers, parsed):
     try:
-        # Extract fields from answers dict and parsed AI response
         record = {
+            "age_group": answers.get("age_group"),
+            "city": answers.get("city"),
             "skin_type": answers.get("skin_type"),
             "concerns": answers.get("concerns", []),
             "acne_type": answers.get("acne_type", []),
@@ -44,7 +43,6 @@ def log_to_supabase(answers, parsed):
             "skin_diagnosis": parsed.get("skin_diagnosis", ""),
             "recommended_products": parsed.get("routine", [])
         }
-        
         payload = json.dumps(record).encode()
         req = urllib.request.Request(
             f"{SUPABASE_URL}/rest/v1/quiz_responses",
@@ -53,13 +51,17 @@ def log_to_supabase(answers, parsed):
                 "Content-Type": "application/json",
                 "apikey": SUPABASE_SECRET_KEY,
                 "Authorization": f"Bearer {SUPABASE_SECRET_KEY}",
-                "Prefer": "return=minimal"
+                "Prefer": "return=representation"  # return full row including id
             },
             method="POST"
         )
-        urllib.request.urlopen(req)
+        with urllib.request.urlopen(req) as res:
+            result = json.loads(res.read())
+            if isinstance(result, list) and len(result) > 0:
+                return result[0].get("id")
     except Exception as e:
         print(f"Supabase logging error: {e}")
+    return None
 
 class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
@@ -73,10 +75,10 @@ class handler(BaseHTTPRequestHandler):
         prompt = body.get('prompt', '')
         answers = body.get('answers', {})
         is_chat = body.get('is_chat', False)
-        
+
         try:
             text = call_groq(prompt)
-            
+
             if is_chat:
                 self.send_response(200)
                 self._cors()
@@ -86,34 +88,22 @@ class handler(BaseHTTPRequestHandler):
                     "content": [{"type": "text", "text": text}]
                 }).encode())
                 return
-            
-            # Clean up the response - remove markdown, extra text
-            clean = text.strip()
-            
-            # Remove markdown code blocks
-            if "```json" in clean:
-                clean = clean.split("```json")[1].split("```")[0].strip()
-            elif "```" in clean:
-                clean = clean.split("```")[1].split("```")[0].strip()
-            
-            # Try to find JSON object boundaries
-            start = clean.find('{')
-            end = clean.rfind('}')
-            if start != -1 and end != -1:
-                clean = clean[start:end+1]
-            
+
+            clean = text.replace("```json", "").replace("```", "").strip()
             parsed = json.loads(clean)
-            
-            # Log to Supabase in background
-            log_to_supabase(answers, parsed)
-            
+
+            # Save to Supabase and get row ID back
+            row_id = log_to_supabase(answers, parsed)
+
             self.send_response(200)
             self._cors()
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps({
-                "content": [{"type": "text", "text": text}]
+                "content": [{"type": "text", "text": text}],
+                "row_id": row_id  # send ID back to frontend
             }).encode())
+
         except urllib.error.HTTPError as e:
             err = e.read()
             self.send_response(e.code)
@@ -121,10 +111,7 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps({
-                "error": {
-                    "type": "groq_error",
-                    "message": err.decode()
-                }
+                "error": {"type": "groq_error", "message": err.decode()}
             }).encode())
         except Exception as e:
             self.send_response(500)
@@ -132,10 +119,7 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             self.wfile.write(json.dumps({
-                "error": {
-                    "type": "server_error",
-                    "message": str(e)
-                }
+                "error": {"type": "server_error", "message": str(e)}
             }).encode())
 
     def _cors(self):
