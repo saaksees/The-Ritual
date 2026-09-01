@@ -435,8 +435,8 @@ function renderHealthScoreCard(healthScore) {
 
 // ── BENCHMARKING & SIMILAR USERS ──
 async function fetchAllUsers() {
-  const SUPABASE_URL = 'https://phoyiuuhpkmtculpqbpj.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_kz44OMVJnt1-mEcSiR197Q_DwWGmDYU';
+  const SUPABASE_URL = 'https://eefaplornxvepzhlsrva.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlZmFwbG9ybnh2ZXB6aGxzcnZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNTA1MDgsImV4cCI6MjEwMzgyNjUwOH0.FbACINUdVUl-8birgg8XGDyRWxC5yW9Trl7TIEWkgwY';
   
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/quiz_responses?select=*&limit=1000`, {
@@ -666,8 +666,8 @@ function copyPersonaToClipboard(text) {
 }
 
 async function logPersonaToSupabase(rowId, personaName) {
-  const SUPABASE_URL = 'https://phoyiuuhpkmtculpqbpj.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBob3lpdXVocGttdGN1bHBxYnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwOTQ5NDYsImV4cCI6MjA1MjY3MDk0Nn0.qJbLiTXKxwV6lZlNB9IlEH5PK3YNfX7MwUmGRgfYGYk';
+  const SUPABASE_URL = 'https://eefaplornxvepzhlsrva.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlZmFwbG9ybnh2ZXB6aGxzcnZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNTA1MDgsImV4cCI6MjEwMzgyNjUwOH0.FbACINUdVUl-8birgg8XGDyRWxC5yW9Trl7TIEWkgwY';
   
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/quiz_responses?id=eq.${rowId}`, {
@@ -686,8 +686,8 @@ async function logPersonaToSupabase(rowId, personaName) {
 }
 
 async function logHealthScoreToSupabase(rowId, score) {
-  const SUPABASE_URL = 'https://phoyiuuhpkmtculpqbpj.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBob3lpdXVocGttdGN1bHBxYnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwOTQ5NDYsImV4cCI6MjA1MjY3MDk0Nn0.qJbLiTXKxwV6lZlNB9IlEH5PK3YNfX7MwUmGRgfYGYk';
+  const SUPABASE_URL = 'https://eefaplornxvepzhlsrva.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlZmFwbG9ybnh2ZXB6aGxzcnZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyNTA1MDgsImV4cCI6MjEwMzgyNjUwOH0.FbACINUdVUl-8birgg8XGDyRWxC5yW9Trl7TIEWkgwY';
   
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/quiz_responses?id=eq.${rowId}`, {

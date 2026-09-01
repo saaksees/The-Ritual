@@ -7,7 +7,7 @@ SUPABASE_SECRET_KEY = os.environ.get("SUPABASE_SECRET_KEY", "")
 
 def call_groq(prompt):
     payload = json.dumps({
-        "model": "llama-3.3-70b-versatile",
+        "model": "llama-3.1-70b-versatile",
         "messages": [{"role": "user", "content": prompt}],
         "max_tokens": 4000,
         "temperature": 0.7
