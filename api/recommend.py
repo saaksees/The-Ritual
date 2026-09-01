@@ -7,9 +7,9 @@ SUPABASE_SECRET_KEY = os.environ.get("SUPABASE_SECRET_KEY", "")
 
 def call_groq(prompt):
     payload = json.dumps({
-        "model": "llama-3.1-8b-instant",
+        "model": "openai/gpt-oss-120b",
         "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": 4000,
+        "max_tokens": 8000,
         "temperature": 0.7
     }).encode()
     req = urllib.request.Request(
