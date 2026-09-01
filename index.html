@@ -233,6 +233,206 @@ body::after{
       opacity:0.6;
     }
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PHASE 4: GLASSMORPHISM CARDS WITH CURSOR TRACKING
+   ══════════════════════════════════════════════════════════════════ */
+
+.product-card{
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--border);
+  padding:1.4rem 1.6rem;
+  margin-bottom:.75rem;
+  border-radius:8px;
+  position:relative;
+  overflow:hidden;
+  transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(46,111,217,0.15) 0%, transparent 50%);
+  opacity:0;
+  transition:opacity 0.3s ease;
+  pointer-events:none;
+}
+
+.product-card:hover::before{
+  opacity:1;
+}
+
+.product-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--border-strong);
+  box-shadow:0 12px 40px rgba(0,0,0,.4);
+}
+
+.persona-card{
+  max-width:820px;
+  margin:0 auto 2.5rem;
+  border:2px solid var(--border-strong);
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  padding:2.5rem;
+  position:relative;
+  overflow:hidden;
+  border-radius:12px;
+  box-shadow:0 12px 48px rgba(0,0,0,.4);
+  perspective:1000px;
+  transition:all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.persona-card::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:3px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+.persona-card::after{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(46,111,217,0.12) 0%, transparent 60%);
+  opacity:0;
+  transition:opacity 0.3s ease;
+  pointer-events:none;
+}
+
+.persona-card:hover::after{
+  opacity:1;
+}
+
+.persona-card:hover{
+  transform:rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-6px);
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+
+/* Touch devices: disable 3D tilt */
+@media (hover: none) {
+  .persona-card:hover{
+    transform:translateY(-6px);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PHASE 5: ANIMATED SVG PROGRESS RING (Health Score)
+   ══════════════════════════════════════════════════════════════════ */
+
+.health-score-progress{
+  fill:none;
+  stroke:url(#scoreGradient);
+  stroke-width:12;
+  stroke-linecap:round;
+  stroke-dasharray:502;
+  stroke-dashoffset:502;
+  transition:stroke-dashoffset 1.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.health-score-progress.animated{
+  stroke-dashoffset:0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PHASE 6: MICRO-INTERACTIONS
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Magnetic Buttons */
+.btn-primary{
+  background:transparent;
+  border:1px solid var(--gold);
+  color:var(--gold);
+  padding:.9rem 3rem;
+  font-family:'Georgia',serif;
+  font-size:.9rem;
+  letter-spacing:.2em;
+  cursor:pointer;
+  text-transform:uppercase;
+  position:relative;
+  overflow:hidden;
+  transition:transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  will-change:transform;
+}
+
+.btn-primary::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:100%;
+  height:100%;
+  background:var(--gold);
+  transition:left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index:-1;
+}
+
+.btn-primary:hover::before{
+  left:0;
+}
+
+.btn-primary:hover{
+  color:var(--navy);
+  box-shadow:0 8px 24px rgba(46,111,217,.4);
+}
+
+/* Ingredient Marquee */
+.ingredient-marquee{
+  width:100%;
+  max-width:820px;
+  margin:3rem auto;
+  overflow:hidden;
+  position:relative;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:1rem 0;
+}
+
+.ingredient-marquee-track{
+  display:flex;
+  gap:2rem;
+  animation:marquee 40s linear infinite;
+  will-change:transform;
+}
+
+.ingredient-marquee-item{
+  font-size:.78rem;
+  color:var(--text-dim);
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+}
+
+.ingredient-marquee-item::before{
+  content:'✦';
+  color:var(--gold);
+  font-size:.6rem;
+}
+
+@keyframes marquee{
+  0%{
+    transform:translateX(0);
+  }
+  100%{
+    transform:translateX(-50%);
+  }
 }.nav-insights{position:fixed;top:1.5rem;right:1.5rem;z-index:1000;font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:2px;transition:all .3s}.nav-insights:hover{color:var(--gold);border-bottom-color:var(--gold)}
 
 .logo-mark{width:60px;height:60px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;font-size:22px;color:var(--gold);position:relative;z-index:10}h1.brand{font-size:clamp(2.2rem,5vw,3.8rem);color:var(--text);letter-spacing:0.12em;font-weight:400;text-align:center;margin-bottom:.5rem}.brand-sub{font-size:clamp(.75rem,2vw,1rem);letter-spacing:0.35em;color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:2.5rem}.divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 2.5rem}.tagline{font-size:1.05rem;color:var(--text-muted);text-align:center;max-width:480px;line-height:1.9;margin-bottom:3rem;font-style:italic}.btn-primary{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:.9rem 3rem;font-family:'Georgia',serif;font-size:.9rem;letter-spacing:.2em;cursor:pointer;transition:all .3s;text-transform:uppercase}.btn-primary:hover{background:var(--gold);color:var(--navy)}#quiz{max-width:680px;width:100%;margin:auto}.progress-wrap{width:100%;margin-bottom:3rem}.progress-bar{width:100%;height:1px;background:rgba(255,255,255,.08);border-radius:1px}.progress-fill{height:1px;background:linear-gradient(90deg,#1A4A9E,#2E6FD9);border-radius:1px;transition:width .5s ease}.progress-label{font-size:.68rem;letter-spacing:.2em;color:var(--text-dim);text-align:right;margin-top:.5rem}.q-eyebrow{font-size:.68rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}.q-text{font-size:clamp(1.15rem,2.8vw,1.6rem);color:var(--text);margin-bottom:.6rem;line-height:1.55;font-weight:400}.q-sub{font-size:.88rem;color:var(--text-muted);font-style:italic;margin-bottom:2rem;line-height:1.7}.multi-hint{font-size:.72rem;color:var(--text-dim);letter-spacing:.08em;margin-bottom:1.2rem;font-style:italic}.options{display:grid;gap:.65rem}.opt{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:.9rem 1.4rem;cursor:pointer;transition:all .22s;text-align:left;color:var(--text-muted);font-family:'Georgia',serif;font-size:.92rem;line-height:1.5}.opt:hover{border-color:var(--gold);color:var(--text);background:rgba(46,111,217,.04)}.opt.selected{border-color:var(--gold);color:var(--gold);background:rgba(46,111,217,.07)}.opt-label{font-size:.72rem;display:block;letter-spacing:.05em;margin-bottom:.2rem;opacity:.7}.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:2.2rem}.btn-ghost{background:none;border:none;color:var(--text-dim);cursor:pointer;font-family:'Georgia',serif;font-size:.85rem;letter-spacing:.1em;padding:.5rem 0;transition:color .2s}.btn-ghost:hover{color:var(--text-muted)}.warn{font-size:.75rem;color:#c47;font-style:italic;margin-top:.75rem;opacity:0;transition:opacity .3s}.warn.show{opacity:1}#loading{background:var(--navy)}.orb{width:80px;height:80px;border:1px solid var(--gold);border-radius:50%;margin:0 auto 2rem;animation:pulse 2s infinite;position:relative}.orb::after{content:'';position:absolute;inset:8px;border:1px solid rgba(46,111,217,.3);border-radius:50%}@keyframes pulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}.loading-text{font-size:1rem;color:var(--text-muted);text-align:center;letter-spacing:.1em;font-style:italic}.loading-sub{font-size:.78rem;color:var(--text-dim);text-align:center;margin-top:.75rem;letter-spacing:.08em}#results{max-width:820px;width:100%;margin:auto;padding:3rem 1rem}.results-header{text-align:center;margin-bottom:3rem}.results-eyebrow{font-size:.68rem;letter-spacing:.35em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}.results-header h2{font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:.08em;font-weight:400;margin-bottom:.5rem}.skin-diagnosis{background:rgba(46,111,217,.04);border:1px solid var(--border);padding:1.75rem 2rem;margin-bottom:2.5rem;line-height:1.9}.skin-diagnosis p{color:var(--text-muted);font-size:.95rem;font-style:italic}.skin-diagnosis strong{color:var(--gold);font-weight:400;font-style:normal}.avoid-block{background:rgba(180,60,60,.04);border:1px solid rgba(180,60,60,.2);padding:1.25rem 1.75rem;margin-bottom:2.5rem}.avoid-label{font-size:.65rem;letter-spacing:.3em;color:#c47;text-transform:uppercase;margin-bottom:.5rem}.avoid-block p{font-size:.88rem;color:var(--text-muted);line-height:1.8;font-style:italic}.section-label{font-size:.65rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}.routine-section{margin-bottom:2rem}.product-card{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:1.4rem 1.6rem;margin-bottom:.75rem;transition:border-color .2s}.product-card:hover{border-color:var(--border-strong)}.card-step{font-size:.65rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:.4rem}.card-name{font-size:1.05rem;color:var(--text);margin-bottom:.15rem}.card-brand{font-size:.72rem;color:var(--text-dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.65rem}.card-why{font-size:.88rem;color:var(--text-muted);line-height:1.75;margin-bottom:.5rem;font-style:italic}.card-ingredient{font-size:.78rem;color:var(--gold-light);background:rgba(46,111,217,.07);border:1px solid rgba(46,111,217,.15);display:inline-block;padding:.2rem .7rem;margin:.15rem .15rem 0 0}.card-meta{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-top:.85rem}.price-tag{font-size:.78rem;color:var(--text-dim);background:rgba(255,255,255,.04);border:1px solid var(--border);padding:.2rem .7rem}.buy-link{font-size:.78rem;color:var(--gold);text-decoration:none;letter-spacing:.1em;border-bottom:1px solid var(--border-strong);padding-bottom:1px;transition:color .2s}.buy-link:hover{color:var(--gold-light)}.restart-row{text-align:center;margin-top:3.5rem;padding-top:2rem;border-top:1px solid var(--border)}.error-msg{color:#e07070;text-align:center;font-style:italic;padding:2rem;border:1px solid rgba(224,112,112,.2);background:rgba(224,112,112,.05)}.kbeauty-section{background:rgba(46,111,217,.02);border:1px solid rgba(46,111,217,.2);margin:2.5rem auto;max-width:820px}.kbeauty-header{padding:1.5rem 1.75rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .2s}.kbeauty-header:hover{background:rgba(46,111,217,.04)}.kbeauty-title{font-size:.68rem;letter-spacing:.3em;color:#A8C4F0;text-transform:uppercase;display:flex;align-items:center;gap:.75rem}.kbeauty-icon{font-size:1rem;transition:transform .3s}.kbeauty-icon.open{transform:rotate(180deg)}.kbeauty-content{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 1.75rem}.kbeauty-content.open{max-height:800px;padding:0 1.75rem 1.75rem}.kbeauty-text{font-size:.88rem;color:var(--text-muted);line-height:1.9;margin-bottom:1.25rem}.kbeauty-list{list-style:none;margin-bottom:1.5rem}.kbeauty-list li{font-size:.85rem;color:var(--text-muted);line-height:1.8;padding-left:1.5rem;position:relative;margin-bottom:.5rem}.kbeauty-list li::before{content:'✦';position:absolute;left:0;color:var(--gold);font-size:.7rem}.kbeauty-brands{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1rem}.kbeauty-brand-tag{font-size:.75rem;color:#A8C4F0;background:rgba(46,111,217,.1);border:1px solid rgba(46,111,217,.25);padding:.4rem .85rem;letter-spacing:.08em}.ingredient-hover{position:relative;cursor:help;border-bottom:1px dotted var(--gold-dark);transition:border-color .2s}.ingredient-hover:hover{border-color:var(--gold)}.ingredient-tooltip{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(4px);background:rgba(17,24,39,.95);backdrop-filter:blur(12px);border:1px solid var(--border-strong);padding:1.25rem 1.4rem;min-width:300px;max-width:320px;border-radius:4px;opacity:0;visibility:hidden;transition:all .3s cubic-bezier(0.4,0,0.2,1);z-index:200;pointer-events:none;box-shadow:0 8px 32px rgba(0,0,0,.4)}.ingredient-hover:hover .ingredient-tooltip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}.ingredient-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:8px solid transparent;border-top-color:rgba(17,24,39,.95)}.ingredient-name{font-size:.75rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:.65rem;font-weight:400}.ingredient-desc{font-size:.85rem;color:var(--text);line-height:1.7;margin-bottom:.85rem}.ingredient-best{font-size:.78rem;color:var(--text-muted);margin-bottom:.5rem;line-height:1.6}.ingredient-best strong{color:var(--gold);font-weight:400}.ingredient-meta{display:flex;align-items:center;gap:1rem;margin-bottom:.75rem;padding-top:.75rem;border-top:1px solid var(--border)}.ingredient-badge{font-size:.68rem;color:var(--gold-light);background:rgba(46,111,217,.12);border:1px solid rgba(46,111,217,.2);padding:.25rem .6rem;letter-spacing:.08em;border-radius:2px}.ingredient-tip{font-size:.75rem;color:var(--text-dim);font-style:italic;line-height:1.6}.ingredient-loading{font-size:.8rem;color:var(--text-dim);font-style:italic;text-align:center;padding:.5rem}.checker-wrap{max-width:820px;margin:2rem auto;border:1px solid var(--border);background:rgba(255,255,255,.02);padding:1.75rem}.checker-textarea{width:100%;background:transparent;border:1px solid var(--border);color:var(--text);font-family:'Georgia',serif;font-size:.9rem;padding:.85rem 1rem;margin:1rem 0;resize:vertical;outline:none;line-height:1.7}.checker-textarea:focus{border-color:var(--gold)}.checker-result{margin-top:1.25rem;padding:1.25rem;border:1px solid var(--border);background:rgba(255,255,255,.02);font-size:.9rem;color:var(--text-muted);line-height:1.8;font-style:italic;display:none}.checker-result.show{display:block}.checker-result.safe{border-color:rgba(100,200,100,.3);background:rgba(100,200,100,.04)}.checker-result.caution{border-color:rgba(255,200,50,.3);background:rgba(255,200,50,.04)}.checker-result.avoid{border-color:rgba(200,80,80,.3);background:rgba(200,80,80,.04)}.season-bar{max-width:820px;margin:0 auto 2rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}.season-label{font-size:.68rem;letter-spacing:.25em;color:var(--text-dim);text-transform:uppercase;margin-right:.5rem}.season-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:.5rem 1.4rem;font-family:'Georgia',serif;font-size:.78rem;letter-spacing:.12em;cursor:pointer;transition:all .25s;text-transform:uppercase}.season-btn:hover{border-color:var(--gold);color:var(--gold)}.season-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(46,111,217,.08)}.season-note{font-size:.78rem;color:var(--text-dim);font-style:italic;margin-top:.5rem;width:100%}.season-loading{font-size:.85rem;color:var(--text-muted);font-style:italic;text-align:center;padding:1.5rem;border:1px solid var(--border);max-width:820px;margin:0 auto 1.5rem}.chat-msg{max-width:85%;font-size:.9rem;line-height:1.75;padding:.85rem 1.1rem;border:1px solid var(--border)}.chat-msg.ai{align-self:flex-start;color:var(--text-muted);background:rgba(255,255,255,.02);border-color:var(--border)}.chat-msg.user{align-self:flex-end;color:var(--gold);background:rgba(46,111,217,.06);border-color:rgba(46,111,217,.25)}.restore-banner{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--navy3);border:1px solid var(--border-strong);padding:1rem 2rem;font-family:Georgia,serif;font-size:.85rem;color:var(--text-muted);z-index:999;display:flex;gap:1.5rem;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.4)}
@@ -1199,6 +1399,161 @@ function initScrollReveal() {
   revealElements.forEach(el => observer.observe(el));
 }
 
+// ══════════════════════════════════════════════════════════════════
+// PHASE 4: Glassmorphism Card Cursor Tracking
+// ══════════════════════════════════════════════════════════════════
+function initCardCursorTracking() {
+  // Only on non-touch devices
+  if (window.matchMedia('(hover: none)').matches) return;
+  
+  const cards = document.querySelectorAll('.product-card, .persona-card');
+  
+  cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      
+      card.style.setProperty('--mx', `${x}%`);
+      card.style.setProperty('--my', `${y}%`);
+      
+      // 3D tilt for persona card
+      if (card.classList.contains('persona-card')) {
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((e.clientY - rect.top - centerY) / centerY) * -5;
+        const rotateY = ((e.clientX - rect.left - centerX) / centerX) * 5;
+        
+        card.style.setProperty('--rx', `${rotateX}deg`);
+        card.style.setProperty('--ry', `${rotateY}deg`);
+      }
+    });
+    
+    card.addEventListener('mouseleave', () => {
+      card.style.setProperty('--mx', '50%');
+      card.style.setProperty('--my', '50%');
+      if (card.classList.contains('persona-card')) {
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+      }
+    });
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PHASE 5: Animated SVG Progress Ring
+// ══════════════════════════════════════════════════════════════════
+function animateHealthScore() {
+  const scoreCircle = document.querySelector('.health-score-progress');
+  const scoreNum = document.querySelector('.health-score-num');
+  
+  if (!scoreCircle || !scoreNum) return;
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const targetScore = parseInt(scoreNum.textContent) || 0;
+        const circumference = 502;
+        const offset = circumference - (targetScore / 100) * circumference;
+        
+        // Animate SVG stroke
+        setTimeout(() => {
+          scoreCircle.style.strokeDashoffset = offset;
+          scoreCircle.classList.add('animated');
+        }, 200);
+        
+        // Count up animation
+        let current = 0;
+        const duration = 1800;
+        const increment = targetScore / (duration / 16);
+        
+        const counter = setInterval(() => {
+          current += increment;
+          if (current >= targetScore) {
+            current = targetScore;
+            clearInterval(counter);
+          }
+          scoreNum.textContent = Math.round(current);
+        }, 16);
+        
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  
+  const scoreCard = document.querySelector('.health-score-card');
+  if (scoreCard) observer.observe(scoreCard);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PHASE 6: Micro-interactions
+// ══════════════════════════════════════════════════════════════════
+function initMagneticButtons() {
+  // Only on non-touch devices
+  if (window.matchMedia('(hover: none)').matches) return;
+  
+  const buttons = document.querySelectorAll('.btn-primary');
+  
+  buttons.forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      const deltaX = (e.clientX - centerX) * 0.15;
+      const deltaY = (e.clientY - centerY) * 0.15;
+      
+      btn.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+    });
+    
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = 'translate(0, 0)';
+    });
+  });
+}
+
+function createIngredientMarquee() {
+  // Check if results page is active and has recommended products
+  const resultsContent = document.getElementById('resultsContent');
+  if (!resultsContent || !resultsContent.textContent.trim()) return;
+  
+  // Extract ingredients from the page
+  const ingredientElements = document.querySelectorAll('.card-ingredient');
+  if (ingredientElements.length === 0) return;
+  
+  const ingredients = Array.from(ingredientElements)
+    .map(el => el.textContent.trim())
+    .filter((v, i, arr) => arr.indexOf(v) === i) // unique
+    .slice(0, 10); // limit to 10
+  
+  if (ingredients.length < 3) return;
+  
+  // Create marquee
+  const marquee = document.createElement('div');
+  marquee.className = 'ingredient-marquee';
+  
+  const track = document.createElement('div');
+  track.className = 'ingredient-marquee-track';
+  
+  // Duplicate for seamless loop
+  const allIngredients = [...ingredients, ...ingredients];
+  
+  allIngredients.forEach(ing => {
+    const item = document.createElement('div');
+    item.className = 'ingredient-marquee-item';
+    item.textContent = ing;
+    track.appendChild(item);
+  });
+  
+  marquee.appendChild(track);
+  
+  // Insert after first routine section
+  const firstRoutine = document.querySelector('.routine-section');
+  if (firstRoutine && firstRoutine.nextSibling) {
+    firstRoutine.parentNode.insertBefore(marquee, firstRoutine.nextSibling);
+  }
+}
+
 // Initialize all phases
 function initVisualUpgrades() {
   createSparkles();
@@ -1206,7 +1561,13 @@ function initVisualUpgrades() {
   initEntranceAnimations();
   
   // Scroll reveal needs to wait for content to load
-  setTimeout(initScrollReveal, 500);
+  setTimeout(() => {
+    initScrollReveal();
+    initCardCursorTracking();
+    animateHealthScore();
+    initMagneticButtons();
+    createIngredientMarquee();
+  }, 500);
 }
 
 // Initialize on page load
