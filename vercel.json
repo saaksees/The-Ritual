@@ -1,8 +1,8 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/recommend.py",
-      "use": "@vercel/python"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
   ]
 }
