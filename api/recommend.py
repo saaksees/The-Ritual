@@ -9,7 +9,7 @@ def call_groq(prompt):
     payload = json.dumps({
         "model": "openai/gpt-oss-120b",
         "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": 8000,
+        "max_tokens": 4000,
         "temperature": 0.7
     }).encode()
     req = urllib.request.Request(

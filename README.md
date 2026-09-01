@@ -1,10 +1,10 @@
 # The Ritual - AI-Powered Skincare Consultant
 
-A personalized skincare recommendation website using Groq AI (Llama 3.3 70B).
+A personalized skincare recommendation website using Groq AI.
 
 ## 🌐 Live Demo
 
-**[Visit The Ritual](https://the-ritual-saaksees-projects.vercel.app/)**
+**[Visit The Ritual](https://the-ritual-amber.vercel.app/)**
 
 ## 🚀 Quick Deploy to Vercel
 
