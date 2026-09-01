@@ -46,6 +46,124 @@
 }
 
 /* ══════════════════════════════════════════════════════════════════
+   FEATURE 2: SEQUENCED RESULTS REVEAL
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Progress Indicator */
+.results-progress{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:1rem;
+  margin:0 auto 3rem;
+  max-width:820px;
+}
+
+.progress-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:rgba(255,255,255,.1);
+  border:1px solid var(--border);
+  transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position:relative;
+}
+
+.progress-dot::after{
+  content:'';
+  position:absolute;
+  inset:-4px;
+  border-radius:50%;
+  border:1px solid var(--gold);
+  opacity:0;
+  transform:scale(0.8);
+  transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-dot.active{
+  background:var(--gold);
+  border-color:var(--gold);
+  box-shadow:0 0 12px rgba(46,111,217,.4);
+}
+
+.progress-dot.active::after{
+  opacity:1;
+  transform:scale(1);
+}
+
+/* Results Stages */
+.results-stage{
+  opacity:0;
+  transform:translateY(30px);
+  max-height:0;
+  overflow:hidden;
+  transition:opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+             transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+             max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom:0;
+}
+
+.results-stage.active{
+  opacity:1;
+  transform:translateY(0);
+  max-height:none;
+  margin-bottom:2rem;
+}
+
+/* Continue Button */
+.continue-btn{
+  display:block;
+  margin:3rem auto 2rem;
+  background:transparent;
+  border:2px solid var(--gold);
+  color:var(--gold);
+  padding:1rem 3rem;
+  font-family:'Georgia',serif;
+  font-size:.9rem;
+  letter-spacing:.2em;
+  cursor:pointer;
+  text-transform:uppercase;
+  position:relative;
+  overflow:hidden;
+  transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width:420px;
+  width:100%;
+}
+
+.continue-btn::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:100%;
+  height:100%;
+  background:var(--gold);
+  transition:left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index:-1;
+}
+
+.continue-btn:hover::before{
+  left:0;
+}
+
+.continue-btn:hover{
+  color:var(--navy);
+  box-shadow:0 8px 24px rgba(46,111,217,.4);
+  transform:translateY(-2px);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .results-stage{
+    transition:none;
+  }
+  .results-stage.active{
+    opacity:1;
+    transform:none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
    PHASE 1: LAYERED BACKGROUND SYSTEM (Site-Wide)
    ══════════════════════════════════════════════════════════════════ */
 
@@ -1318,22 +1436,60 @@ async function renderResults(d){
   });
 
   html+=`<div class="season-bar"><span class="season-label">Season</span><button class="season-btn ${currentSeason==='Summer'?'active':''}" data-season="Summer" onclick="switchSeason('Summer')">☀ Summer</button><button class="season-btn ${currentSeason==='Monsoon'?'active':''}" data-season="Monsoon" onclick="switchSeason('Monsoon')">🌧 Monsoon</button><button class="season-btn ${currentSeason==='Winter'?'active':''}" data-season="Winter" onclick="switchSeason('Winter')">❄ Winter</button><span class="season-note" id="seasonNote">${seasonNotes[currentSeason]}</span></div>`;
+  
+  // ══════════════════════════════════════════════════════════════════
+  // FEATURE 2: Sequenced Results Reveal (4 Stages)
+  // ══════════════════════════════════════════════════════════════════
+  
+  // Progress indicator
+  html += `<div class="results-progress">
+    <div class="progress-dot active" data-stage="1"></div>
+    <div class="progress-dot" data-stage="2"></div>
+    <div class="progress-dot" data-stage="3"></div>
+    <div class="progress-dot" data-stage="4"></div>
+  </div>`;
+  
+  // STAGE 1: Diagnosis
+  html += `<div class="results-stage active" data-stage="1">`;
   if(d.skin_diagnosis){html+=`<div class="skin-diagnosis"><p>${d.skin_diagnosis.replace(/\b(your skin|you|your)\b/gi,m=>`<strong>${m}</strong>`)}</p></div>`;}
   if(d.key_ingredients_to_seek&&d.key_ingredients_to_seek.length){html+=`<div class="routine-section"><div class="section-label">Ingredients your skin will love</div><div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem">${wrapIngredientsWithTooltip(d.key_ingredients_to_seek)}</div></div>`;}
   if(d.why_avoid){html+=`<div class="avoid-block"><div class="avoid-label">What to avoid</div>`;if(d.ingredients_to_avoid&&d.ingredients_to_avoid.length){html+=`<div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.65rem">`;d.ingredients_to_avoid.forEach(i=>{html+=`<span style="font-size:.78rem;color:#c47;border:1px solid rgba(180,60,60,.25);padding:.2rem .65rem;background:rgba(180,60,60,.05)">${i}</span>`});html+=`</div>`;}html+=`<p>${d.why_avoid}</p></div>`;}
+  html += `<button class="continue-btn" onclick="revealNextStage(2)">Continue to Your Ritual →</button>`;
+  html += `</div>`;
+  
+  // STAGE 2: Routine
   const am=(d.routine||[]).filter(s=>s.time&&s.time.toLowerCase().includes('am')&&!s.time.toLowerCase().includes('pm'));
   const pm=(d.routine||[]).filter(s=>s.time&&s.time.toLowerCase()==='pm');
   const both=(d.routine||[]).filter(s=>!s.time||s.time.toLowerCase().includes('am & pm')||s.time.toLowerCase().includes('both'));
-  html+=`<div id="routineCards">`;
+  html+=`<div class="results-stage" data-stage="2"><div id="routineCards">`;
   function cards(steps,label){if(!steps.length)return'';let h=`<div class="routine-section"><div class="section-label">${label}</div>`;steps.forEach(s=>{h+=`<div class="product-card"><div class="card-step">${s.step||''} ${s.time?'· '+s.time:''} ${s.is_kbeauty?'<span style="font-size:.6rem;background:rgba(168,196,240,.1);border:1px solid rgba(168,196,240,.3);color:#A8C4F0;padding:.15rem .5rem;margin-left:.4rem;letter-spacing:.08em">K-BEAUTY</span>':''}</div><div class="card-name">${s.product||''}</div><div class="card-brand">${s.brand||''}</div><div class="card-why">${s.why||''}</div>${s.key_actives?.length?'<div style="margin-bottom:.5rem">'+wrapIngredientsWithTooltip(s.key_actives)+'</div>':''}<div class="card-meta">${s.price?`<span class="price-tag">${s.price}</span>`:''}${s.link?`<a class="buy-link" href="${s.link}" target="_blank">Shop ${s.link.includes('sephora')?'on Sephora':s.link.includes('amazon')?'on Amazon':'on Nykaa'} →</a>`:`<a class="buy-link" href="https://www.nykaa.com/search/result/?q=${encodeURIComponent(s.product+' '+s.brand)}" target="_blank">Search on Nykaa →</a>`}</div></div>`;});return h+'</div>';}
   if(both.length)html+=cards(both,'Your Daily Ritual');
   if(am.length)html+=cards(am,'Morning Ritual');
   if(pm.length)html+=cards(pm,'Night Ritual');
   html+=`</div>`;
+  html += `<button class="continue-btn" onclick="revealNextStage(3)">Continue to Your Persona →</button>`;
+  html += `</div>`;
+  
+  // STAGE 3: Persona
+  html += `<div class="results-stage" data-stage="3">`;
+  html += renderPersonaCard(persona);
+  html += `<button class="continue-btn" onclick="revealNextStage(4)">Continue to Your Score →</button>`;
+  html += `</div>`;
+  
+  // STAGE 4: Health Score
+  html += `<div class="results-stage" data-stage="4">`;
+  html += renderHealthScoreCard(healthScore);
+  html += `</div>`;
+  
+  // Additional content (always visible at end)
   html+=`<div class="checker-wrap"><div style="font-size:.65rem;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;margin-bottom:.5rem">Is This Right For Me?</div><p style="font-size:.88rem;color:var(--text-muted);font-style:italic;margin-bottom:.5rem">Paste a product name or ingredient list — I'll check if it suits your skin</p><textarea id="checkerInput" class="checker-textarea" rows="3" placeholder="e.g. The Ordinary Retinol 1% or paste a full ingredient list..."></textarea><button onclick="checkProduct()" class="btn-primary" style="padding:.7rem 2rem;font-size:.82rem">Check It →</button><div id="checkerResult" class="checker-result"></div></div>`;
   html+=`<div class="kbeauty-section"><div class="kbeauty-header" onclick="toggleKBeauty()"><div class="kbeauty-title"><span>✦</span><span>Why We Include Korean Skincare</span></div><div class="kbeauty-icon" id="kbeautyIcon">▼</div></div><div class="kbeauty-content" id="kbeautyContent"><p class="kbeauty-text">Korean skincare (K-beauty) has revolutionised the way we approach skin health. Rather than treating problems after they appear, K-beauty focuses on prevention, gentle care, and long-term skin wellness — perfectly suited for Indian skin and climates.</p><ul class="kbeauty-list"><li><strong style="color:var(--gold)">Prevention over correction</strong> — K-beauty prioritises building healthy skin rather than fixing damage</li><li><strong style="color:var(--gold)">Lightweight formulations</strong> — Ideal for India's humid weather, won't feel heavy or greasy</li><li><strong style="color:var(--gold)">Hydration innovation</strong> — Leaders in moisture retention and barrier repair technology</li><li><strong style="color:var(--gold)">Gentle ingredients</strong> — Formulated for sensitive skin, minimal irritation</li><li><strong style="color:var(--gold)">Trusted availability</strong> — All recommended products are available on Nykaa and verified Indian retailers</li></ul><p class="kbeauty-text" style="font-size:.8rem;font-style:italic;margin-bottom:.75rem">Trusted K-beauty brands we recommend:</p><div class="kbeauty-brands"><span class="kbeauty-brand-tag">Beauty of Joseon</span><span class="kbeauty-brand-tag">COSRX</span><span class="kbeauty-brand-tag">Isntree</span><span class="kbeauty-brand-tag">Round Lab</span><span class="kbeauty-brand-tag">Anua</span><span class="kbeauty-brand-tag">Torriden</span></div></div></div>`;
+  
   document.getElementById('resultsContent').innerHTML=html;
   renderChatbox(d);
+  
+  // Initialize scroll reveal for cards
+  setTimeout(() => initScrollReveal(), 100);
 }
 
 function toggleKBeauty(){const content=document.getElementById('kbeautyContent');const icon=document.getElementById('kbeautyIcon');content.classList.toggle('open');icon.classList.toggle('open');}
@@ -1378,6 +1534,83 @@ function detectAccentTheme(answersObj) {
   
   // Default: Balanced theme for combination/sensitive
   return 'balanced';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 2: Reveal Next Stage
+// ══════════════════════════════════════════════════════════════════
+function revealNextStage(stageNum) {
+  // Check for reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  
+  // Activate progress dot
+  document.querySelectorAll('.progress-dot').forEach(dot => {
+    const dotStage = parseInt(dot.getAttribute('data-stage'));
+    if (dotStage <= stageNum) {
+      dot.classList.add('active');
+    }
+  });
+  
+  // Reveal stage
+  const nextStage = document.querySelector(`.results-stage[data-stage="${stageNum}"]`);
+  if (!nextStage) return;
+  
+  nextStage.classList.add('active');
+  
+  // Scroll to the new stage smoothly
+  setTimeout(() => {
+    nextStage.scrollIntoView({ 
+      behavior: prefersReducedMotion ? 'auto' : 'smooth', 
+      block: 'start'
+    });
+  }, 100);
+  
+  // Stagger reveal product cards if in stage 2 (routine)
+  if (stageNum === 2) {
+    setTimeout(() => {
+      const cards = nextStage.querySelectorAll('.product-card');
+      cards.forEach((card, index) => {
+        if (!prefersReducedMotion) {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            card.style.transition = 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, index * 120);
+        }
+      });
+    }, 300);
+  }
+  
+  // Trigger health score animation if in stage 4
+  if (stageNum === 4) {
+    setTimeout(() => {
+      const progressRing = nextStage.querySelector('.health-score-progress');
+      const scoreNum = nextStage.querySelector('.health-score-num');
+      if (progressRing && scoreNum) {
+        progressRing.classList.add('animated');
+        
+        // Animate score counting
+        const targetScore = parseInt(scoreNum.textContent);
+        let currentScore = 0;
+        const duration = 1800;
+        const steps = 60;
+        const increment = targetScore / steps;
+        const stepDuration = duration / steps;
+        
+        const counter = setInterval(() => {
+          currentScore += increment;
+          if (currentScore >= targetScore) {
+            scoreNum.textContent = targetScore;
+            clearInterval(counter);
+          } else {
+            scoreNum.textContent = Math.floor(currentScore);
+          }
+        }, stepDuration);
+      }
+    }, 300);
+  }
 }
 const seasonNotes={Summer:'High heat & humidity — focus on SPF, oil control, and lightweight textures',Monsoon:'High humidity & fungal risk — non-comedogenic, minimal layering, anti-bacterial',Winter:'Dry air & cold — barrier repair, rich moisturisers, gentle cleansing'};
 async function switchSeason(season){document.querySelectorAll('.season-btn').forEach(b=>b.classList.toggle('active',b.dataset.season===season));document.getElementById('seasonNote').textContent=seasonNotes[season];const ritual=window._ritualContext;if(!ritual)return;const routineEl=document.getElementById('routineCards');if(!routineEl)return;routineEl.innerHTML=`<div class="season-loading">Adjusting your ritual for ${season}…</div>`;const prompt=`You are a luxury skincare expert. A user has this base ritual:\n${(ritual.routine||[]).map(p=>`${p.step}: ${p.product} by ${p.brand}`).join('\n')}\n\nTheir skin diagnosis: ${ritual.skin_diagnosis||''}\nIngredients to avoid: ${(ritual.ingredients_to_avoid||[]).join(', ')}\n\nAdjust this routine for the Indian ${season} season. Return ONLY a JSON array (no wrapper object, no markdown):\n[{"step":"Cleanser","time":"AM & PM","product":"exact product name","brand":"brand name","why":"reason for this season","key_actives":["ingredient1"],"price":"₹XXX","link":"","is_kbeauty":false}]`;try{const res=await fetch('/api/recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,answers:{},is_chat:true})});const data=await res.json();let text=data.content?.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();const start=text.indexOf('[');const end=text.lastIndexOf(']');if(start!==-1&&end!==-1){text=text.substring(start,end+1);}const parsed=JSON.parse(text);window._ritualContext.routine=parsed;renderRoutineCards(parsed,routineEl);}catch(e){console.error('Season switch error:',e);routineEl.innerHTML=`<div class="season-loading">Could not adjust routine. Try again!</div>`;}}
