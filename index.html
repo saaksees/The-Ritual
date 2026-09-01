@@ -1,6 +1,51 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>The Ritual</title><style>*{margin:0;padding:0;box-sizing:border-box}:root{--gold:#2E6FD9;--gold-light:#A8C4F0;--gold-dark:#1A4A9E;--navy:#0D0F14;--navy2:#12151C;--navy3:#1A1E28;--text:#EEF2F8;--text-muted:#8A9BBF;--text-dim:#4A5470;--border:rgba(46,111,217,0.2);--border-strong:rgba(46,111,217,0.5);}
 
 /* ══════════════════════════════════════════════════════════════════
+   FEATURE 1: PERSONA-DRIVEN ACCENT THEMING
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Warm Theme - Dry/Mature Skin */
+#results[data-theme="warm"]{
+  --gold:#C9A84C;
+  --gold-light:#E5D49B;
+  --gold-dark:#A68A3D;
+  --border:rgba(201,168,76,0.2);
+  --border-strong:rgba(201,168,76,0.5);
+}
+
+/* Cool Theme - Oily/Acne-Prone Skin */
+#results[data-theme="cool"]{
+  --gold:#2A8FD9;
+  --gold-light:#8FC9F0;
+  --gold-dark:#1A5A9E;
+  --border:rgba(42,143,217,0.2);
+  --border-strong:rgba(42,143,217,0.5);
+}
+
+/* Balanced Theme - Combination/Sensitive (default) */
+#results[data-theme="balanced"]{
+  --gold:#2E6FD9;
+  --gold-light:#A8C4F0;
+  --gold-dark:#1A4A9E;
+  --border:rgba(46,111,217,0.2);
+  --border-strong:rgba(46,111,217,0.5);
+}
+
+/* Soft Theme - Normal Skin */
+#results[data-theme="soft"]{
+  --gold:#5A86C9;
+  --gold-light:#B8CEE5;
+  --gold-dark:#3D5A8A;
+  --border:rgba(90,134,201,0.2);
+  --border-strong:rgba(90,134,201,0.5);
+}
+
+/* Smooth transition for theme changes */
+#results *{
+  transition:color 0.6s ease, border-color 0.6s ease, background-color 0.6s ease;
+}
+
+/* ══════════════════════════════════════════════════════════════════
    PHASE 1: LAYERED BACKGROUND SYSTEM (Site-Wide)
    ══════════════════════════════════════════════════════════════════ */
 
@@ -1212,11 +1257,19 @@ async function generateRecs(){
 async function renderResults(d){
   window._ritualContext=d;
   show('results');
+  
+  // ══════════════════════════════════════════════════════════════════
+  // FEATURE 1: Apply Persona-Driven Accent Theme
+  // ══════════════════════════════════════════════════════════════════
+  const answersObj = window._lastAnswers || {};
+  const theme = detectAccentTheme(answersObj);
+  const resultsEl = document.getElementById('results');
+  resultsEl.setAttribute('data-theme', theme);
+  
   let html='';
   const currentSeason=getCurrentSeason();
 
   // ── PERSONA CARD ──
-  const answersObj = window._lastAnswers || {};
   const persona = await generatePersona(answersObj, d);
   window._userPersona = persona;
   
@@ -1290,6 +1343,42 @@ function wrapIngredientsWithTooltip(actives){return actives.map(ing=>{const id='
 async function showIngredientTooltip(element,ingredient){const tooltip=element.querySelector('.ingredient-tooltip');if(tooltip.getAttribute('data-loaded')==='true'){tooltip.style.display='block';return;}tooltip.style.display='block';tooltip.innerHTML='<div class="ingredient-loading">Loading...</div>';const info=await fetchIngredientInfo(ingredient);tooltip.setAttribute('data-loaded','true');const bestForList=info.best_for.map(b=>`• ${b}`).join('<br>');tooltip.innerHTML=`<div class="ingredient-name">${info.name}</div><div class="ingredient-desc">${info.what}</div>${bestForList?`<div class="ingredient-best"><strong>Best For:</strong><br>${bestForList}</div>`:''}<div class="ingredient-meta"><span class="ingredient-badge">${info.beginner_friendly?'✓ Beginner Friendly':'Advanced'}</span></div>${info.usage_tip?`<div class="ingredient-tip">${info.usage_tip}</div>`:''}`;}
 async function checkProduct(){const input=document.getElementById('checkerInput').value.trim();if(!input)return;const result=document.getElementById('checkerResult');result.className='checker-result show';result.textContent='Analysing…';const ritual=window._ritualContext;if(!ritual){result.textContent='Please complete the quiz first.';return;}const prompt=`You are a skincare expert. A user has the following skin profile:\nSkin diagnosis: ${ritual.skin_diagnosis||''}\nConcerns: ${(ritual.key_ingredients_to_seek||[]).join(', ')}\nIngredients to avoid: ${(ritual.ingredients_to_avoid||[]).join(', ')}\n\nThey want to know if this product/ingredient is right for them:\n"${input}"\n\nGive a verdict in 3-4 sentences. Start with one of: SAFE FOR YOU ✓, USE WITH CAUTION ⚠, AVOID FOR NOW ✗. Then explain why based on their specific skin profile. Be direct and specific.`;try{const res=await fetch('/api/recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,answers:{},is_chat:true})});const data=await res.json();const text=data.content?.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim()||'Could not analyse. Try again.';result.textContent=text;if(text.includes('SAFE'))result.className='checker-result show safe';else if(text.includes('CAUTION'))result.className='checker-result show caution';else if(text.includes('AVOID'))result.className='checker-result show avoid';}catch(e){result.textContent='Something went wrong. Try again!';}}
 function getCurrentSeason(){const m=new Date().getMonth()+1;if(m>=3&&m<=6)return 'Summer';if(m>=7&&m<=9)return 'Monsoon';return 'Winter';}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 1: Detect Accent Theme Based on Skin Type
+// ══════════════════════════════════════════════════════════════════
+function detectAccentTheme(answersObj) {
+  const skinType = (answersObj.skin_type || '').toLowerCase();
+  const concerns = (answersObj.concerns || []).map(c => c.toLowerCase());
+  
+  // Warm theme: Dry/Mature skin
+  if (skinType.includes('dry') || skinType.includes('tight')) {
+    return 'warm';
+  }
+  
+  // Check for mature/aging concerns
+  if (concerns.some(c => c.includes('aging') || c.includes('firmness') || c.includes('fine lines'))) {
+    return 'warm';
+  }
+  
+  // Cool theme: Oily/Acne-prone skin
+  if (skinType.includes('oily')) {
+    return 'cool';
+  }
+  
+  // Check for acne concerns
+  if (concerns.some(c => c.includes('acne') || c.includes('breakout'))) {
+    return 'cool';
+  }
+  
+  // Soft theme: Normal skin
+  if (skinType.includes('normal') || skinType.includes('balanced')) {
+    return 'soft';
+  }
+  
+  // Default: Balanced theme for combination/sensitive
+  return 'balanced';
+}
 const seasonNotes={Summer:'High heat & humidity — focus on SPF, oil control, and lightweight textures',Monsoon:'High humidity & fungal risk — non-comedogenic, minimal layering, anti-bacterial',Winter:'Dry air & cold — barrier repair, rich moisturisers, gentle cleansing'};
 async function switchSeason(season){document.querySelectorAll('.season-btn').forEach(b=>b.classList.toggle('active',b.dataset.season===season));document.getElementById('seasonNote').textContent=seasonNotes[season];const ritual=window._ritualContext;if(!ritual)return;const routineEl=document.getElementById('routineCards');if(!routineEl)return;routineEl.innerHTML=`<div class="season-loading">Adjusting your ritual for ${season}…</div>`;const prompt=`You are a luxury skincare expert. A user has this base ritual:\n${(ritual.routine||[]).map(p=>`${p.step}: ${p.product} by ${p.brand}`).join('\n')}\n\nTheir skin diagnosis: ${ritual.skin_diagnosis||''}\nIngredients to avoid: ${(ritual.ingredients_to_avoid||[]).join(', ')}\n\nAdjust this routine for the Indian ${season} season. Return ONLY a JSON array (no wrapper object, no markdown):\n[{"step":"Cleanser","time":"AM & PM","product":"exact product name","brand":"brand name","why":"reason for this season","key_actives":["ingredient1"],"price":"₹XXX","link":"","is_kbeauty":false}]`;try{const res=await fetch('/api/recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt,answers:{},is_chat:true})});const data=await res.json();let text=data.content?.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();const start=text.indexOf('[');const end=text.lastIndexOf(']');if(start!==-1&&end!==-1){text=text.substring(start,end+1);}const parsed=JSON.parse(text);window._ritualContext.routine=parsed;renderRoutineCards(parsed,routineEl);}catch(e){console.error('Season switch error:',e);routineEl.innerHTML=`<div class="season-loading">Could not adjust routine. Try again!</div>`;}}
 function renderRoutineCards(routine,container){const am=routine.filter(s=>s.time&&s.time.toLowerCase().includes('am')&&!s.time.toLowerCase().includes('pm'));const pm=routine.filter(s=>s.time&&s.time.toLowerCase()==='pm');const both=routine.filter(s=>!s.time||s.time.toLowerCase().includes('am & pm')||s.time.toLowerCase().includes('both'));function cards(steps,label){if(!steps.length)return'';let h=`<div class="routine-section"><div class="section-label">${label}</div>`;steps.forEach(s=>{h+=`<div class="product-card"><div class="card-step">${s.step||''} ${s.time?'· '+s.time:''} ${s.is_kbeauty?'<span style="font-size:.6rem;background:rgba(168,196,240,.1);border:1px solid rgba(168,196,240,.3);color:#A8C4F0;padding:.15rem .5rem;margin-left:.4rem;letter-spacing:.08em">K-BEAUTY</span>':''}</div><div class="card-name">${s.product||''}</div><div class="card-brand">${s.brand||''}</div><div class="card-why">${s.why||''}</div>${s.key_actives?.length?'<div style="margin-bottom:.5rem">'+wrapIngredientsWithTooltip(s.key_actives)+'</div>':''}<div class="card-meta">${s.price?`<span class="price-tag">${s.price}</span>`:''}${s.link?`<a class="buy-link" href="${s.link}" target="_blank">Shop ${s.link.includes('sephora')?'on Sephora':s.link.includes('amazon')?'on Amazon':'on Nykaa'} →</a>`:`<a class="buy-link" href="https://www.nykaa.com/search/result/?q=${encodeURIComponent(s.product+' '+s.brand)}" target="_blank">Search on Nykaa →</a>`}</div></div>`;});return h+'</div>';}container.innerHTML='';if(both.length)container.innerHTML+=cards(both,'Your Daily Ritual');if(am.length)container.innerHTML+=cards(am,'Morning Ritual');if(pm.length)container.innerHTML+=cards(pm,'Night Ritual');}
